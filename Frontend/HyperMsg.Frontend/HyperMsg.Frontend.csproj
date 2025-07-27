@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\HyperMsg.Scada.Frontend.Shared\HyperMsg.Scada.Frontend.Shared.csproj" />
     <ProjectReference Include="..\..\..\HyperMsg\src\HyperMsg.Core\HyperMsg.Core.csproj" />
+    <ProjectReference Include="..\..\..\HyperMsg\src\HyperMsg.Hosting\HyperMsg.Hosting.csproj" />
   </ItemGroup>
 
 </Project>

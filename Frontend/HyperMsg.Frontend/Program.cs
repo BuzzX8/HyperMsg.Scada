@@ -1,5 +1,6 @@
 using HyperMsg.Frontend.Components;
 using HyperMsg.Messaging;
+using HyperMsg.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddMessagingContext();
+builder.Services.AddMessagingContext()
+    .AddMessagingComponent<MessagingComponent>()
+    .AddMessagingWorker();
 
 var app = builder.Build();
 

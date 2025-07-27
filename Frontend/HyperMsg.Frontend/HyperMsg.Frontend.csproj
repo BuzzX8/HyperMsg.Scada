@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\HyperMsg.Scada.Frontend.Shared\HyperMsg.Scada.Frontend.Shared.csproj" />
-    <ProjectReference Include="..\..\..\HyperMsg\src\HyperMsg.Core\HyperMsg.Core.csproj" />
-    <ProjectReference Include="..\..\..\HyperMsg\src\HyperMsg.Hosting\HyperMsg.Hosting.csproj" />
+    <PackageReference Include="HyperMsg.Core" Version="1.0.0-beta" />
+    <PackageReference Include="HyperMsg.Hosting" Version="1.0.0-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\HyperMsg.Scada.Frontend.Shared\HyperMsg.Scada.Frontend.Shared.csproj" />    
   </ItemGroup>
 
 </Project>

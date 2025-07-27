@@ -1,4 +1,6 @@
 ﻿@page "/device-list"
+@using HyperMsg.Messaging
+@using HyperMsg.Scada.Frontend.Shared.Messages
 @using HyperMsg.Scada.Frontend.Shared.Models
 @using HyperMsg.Scada.Frontend.Shared.Components
 
@@ -7,10 +9,15 @@
 
 @code
 {
-    private IEnumerable<Device> Devices { get; set; } = [];
+    [Parameter]
+    public IEnumerable<Device>? Devices { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    public IMessagingContext MessagingContext { get; set; } = default!;
+
+    protected override void OnInitialized()
     {
-        
+        var response = MessagingContext.Dispatcher.DispatchRequest<DeviceListRequest, DeviceListResponse>(new ());
+        Devices = response?.Devices ?? [];
     }
 }

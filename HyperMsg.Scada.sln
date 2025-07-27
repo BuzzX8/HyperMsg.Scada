@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{BF1F8F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Frontend", "Frontend\HyperMsg.Frontend\HyperMsg.Frontend.csproj", "{8A793BA9-039C-4197-8E34-629571D04033}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.Frontend.Shared", "HyperMsg.Scada.Frontend.Shared\HyperMsg.Scada.Frontend.Shared.csproj", "{5C8B9D63-CDC7-4570-A22A-A43C6844D2CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared/HyperMsg.Scada.Frontend.Shared", "Shared/HyperMsg.Scada.Frontend.Shared\HyperMsg.Scada.Frontend.Shared.csproj", "{5C8B9D63-CDC7-4570-A22A-A43C6844D2CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

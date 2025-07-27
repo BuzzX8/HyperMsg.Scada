@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\HyperMsg.Scada.Frontend.Shared\HyperMsg.Scada.Frontend.Shared.csproj" />
+    <!--<ProjectReference Include="..\..\..\HyperMsg\src\HyperMsg.Core\HyperMsg.Core.csproj" />-->
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,16 @@
 ﻿@page "/device-list"
+@using HyperMsg.Scada.Frontend.Shared.Models
+@using HyperMsg.Scada.Frontend.Shared.Components
 
 <h1>Device list</h1>
+<DeviceListComponent Devices="@Devices" />
+
+@code
+{
+    private IEnumerable<Device> Devices { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+}

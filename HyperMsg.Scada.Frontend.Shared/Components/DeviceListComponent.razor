@@ -1,9 +1,9 @@
 @using HyperMsg.Scada.Frontend.Shared.Models
-namespace HyperMsg.Scada.Frontend.Shared
+@namespace HyperMsg.Scada.Frontend.Shared.Components
 
 @code {
     [Parameter]
-    public IEnumerable<Device> Devices { get; set; } = [];
+    public IEnumerable<Device>? Devices { get; set; }
 }
 
 <table class="table">

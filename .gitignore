@@ -6,3 +6,4 @@
 **/obj
 **/bin
 /NuGet.config
+/Frontend/HyperMsg.Frontend/HyperMsg.Frontend.csproj

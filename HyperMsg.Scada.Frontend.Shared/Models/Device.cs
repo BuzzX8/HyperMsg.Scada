@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace HyperMsg.Scada.Frontend.Shared;
+namespace HyperMsg.Scada.Frontend.Shared.Models;
 
 public class Device
 {

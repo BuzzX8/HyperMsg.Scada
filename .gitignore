@@ -7,3 +7,4 @@
 **/bin
 /NuGet.config
 /Frontend/HyperMsg.Frontend/HyperMsg.Frontend.csproj
+/Frontend/HyperMsg.Frontend/HyperMsg.Frontend.csproj.user

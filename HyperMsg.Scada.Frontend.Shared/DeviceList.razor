@@ -1,0 +1,29 @@
+
+
+@code {
+    [Parameter]
+    public IEnumerable<Device> Devices { get; set; } = [];
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Devices != null)
+        {
+            foreach (var device in Devices)
+            {
+                <tr>
+                    <td>@device.Name</td>
+                    <td>@device.Status</td>
+                    <td>@device.Type</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

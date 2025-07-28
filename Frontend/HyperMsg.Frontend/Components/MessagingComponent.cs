@@ -1,6 +1,5 @@
 ﻿using HyperMsg.Messaging;
 using HyperMsg.Scada.Frontend.Shared.Messages;
-using HyperMsg.Scada.Frontend.Shared.Models;
 
 namespace HyperMsg.Frontend.Components;
 

@@ -1,0 +1,23 @@
+﻿@page "/device-list"
+@using HyperMsg.Messaging
+@using HyperMsg.Scada.Frontend.Shared.Messages
+@using HyperMsg.Scada.Frontend.Shared.Models
+@using HyperMsg.Scada.Frontend.Shared.Components
+
+<h1>Device list</h1>
+<DeviceListComponent Devices="@Devices" />
+
+@code
+{
+    [Parameter]
+    public IEnumerable<Device>? Devices { get; set; }
+
+    [Inject]
+    public IMessagingContext MessagingContext { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        var response = MessagingContext.Dispatcher.DispatchRequest<DeviceListRequest, DeviceListResponse>(new ());
+        Devices = response?.Devices ?? [];
+    }
+}

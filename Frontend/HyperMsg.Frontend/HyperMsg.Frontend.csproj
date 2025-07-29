@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\HyperMsg.Scada.Frontend.Shared\HyperMsg.Scada.Frontend.Shared.csproj" />    
+    <ProjectReference Include="..\..\Shared\HyperMsg.Scada.Shared\HyperMsg.Scada.Shared.csproj" />    
   </ItemGroup>
 
 </Project>

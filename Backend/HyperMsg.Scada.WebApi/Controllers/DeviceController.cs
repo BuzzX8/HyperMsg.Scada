@@ -1,4 +1,5 @@
 ﻿using HyperMsg.Messaging;
+using HyperMsg.Scada.Shared.Messages;
 using HyperMsg.Scada.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,13 +28,16 @@ public class DeviceController : ControllerBase
     [HttpGet]
     [EndpointDescription("Get all devices")]
     [ProducesResponseType(typeof(IEnumerable<DeviceDto>), StatusCodes.Status200OK)]
-    public Task<IEnumerable<DeviceDto>> GetAll()
+    public async Task<IEnumerable<DeviceDto>> GetAll(CancellationToken cancellationToken)
     {
-        return Task.FromResult<IEnumerable<DeviceDto>>(
-        [
-            new() { Id = "1", Name = "Device1", Description = "First device", Type = "TypeA" },
-            new() { Id = "2", Name = "Device2", Description = "Second device", Type = "TypeB" }
-        ]);
+        var response = await _messagingContext.Dispatcher.DispatchDeviceListRequestAsync(cancellationToken);
+
+        return response.Select(device => new DeviceDto
+        {
+            Id = device.Id,
+            Name = device.Name,
+            Type = device.Type
+        });
     }
 
     /// <summary>

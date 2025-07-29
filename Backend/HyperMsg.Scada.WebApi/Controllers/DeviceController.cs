@@ -1,5 +1,6 @@
 ﻿using HyperMsg.Messaging;
 using HyperMsg.Scada.Shared.Messages;
+using HyperMsg.Scada.Shared.Models;
 using HyperMsg.Scada.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +13,12 @@ namespace HyperMsg.Scada.WebApi.Controllers;
 [Route("api/[controller]")]
 public class DeviceController : ControllerBase
 {
-    private readonly IMessagingContext _messagingContext;
+    private readonly IDispatcher _dispatcher;
     private readonly ILogger<DeviceController> _logger;
 
-    public DeviceController(IMessagingContext messagingContext, ILogger<DeviceController> logger)
+    public DeviceController(IDispatcher dispatcher, ILogger<DeviceController> logger)
     {
-        _messagingContext = messagingContext;
+        _dispatcher = dispatcher;
         _logger = logger;
     }
 
@@ -28,16 +29,11 @@ public class DeviceController : ControllerBase
     [HttpGet]
     [EndpointDescription("Get all devices")]
     [ProducesResponseType(typeof(IEnumerable<DeviceDto>), StatusCodes.Status200OK)]
-    public async Task<IEnumerable<DeviceDto>> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var response = await _messagingContext.Dispatcher.DispatchDeviceListRequestAsync(cancellationToken);
+        var response = await _dispatcher.DispatchDeviceListRequestAsync(cancellationToken);
 
-        return response.Select(device => new DeviceDto
-        {
-            Id = device.Id,
-            Name = device.Name,
-            Type = device.Type
-        });
+        return Ok(response.Select(ToDeviceDto));
     }
 
     /// <summary>
@@ -47,10 +43,19 @@ public class DeviceController : ControllerBase
     /// <returns>The requested device.</returns>
     [HttpGet("{deviceId}")]
     [EndpointDescription("Get device by ID")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(DeviceDto), StatusCodes.Status200OK)]
-    public Task<DeviceDto> GetById(string deviceId)
+    public async Task<IActionResult> GetById(string deviceId, CancellationToken cancellationToken)
     {
-        return Task.FromResult<DeviceDto>(new() { Id = deviceId, Name = "Device" + deviceId, Description = "Description for device " + deviceId, Type = "TypeX" });
+        var response = await _dispatcher.DispatchDeviceRequestAsync(deviceId, cancellationToken);
+
+        if (response is null)
+        {
+            _logger.LogWarning("Device with ID {DeviceId} not found", deviceId);
+            return NotFound(deviceId);
+        }
+
+        return Ok(ToDeviceDto(response));
     }
 
     /// <summary>
@@ -90,5 +95,15 @@ public class DeviceController : ControllerBase
     public ActionResult Delete(string deviceId)
     {
         return NoContent();
+    }
+
+    private static DeviceDto ToDeviceDto(Device device)
+    {
+        return new()
+        {
+            Id = device.Id,
+            Name = device.Name,
+            Type = device.Type
+        };
     }
 }

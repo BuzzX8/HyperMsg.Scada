@@ -18,4 +18,18 @@ public static class DispatcherExtensions
 
         return response?.Devices ?? [];
     }
+
+    public static Device DispatchDeviceRequest(this IDispatcher dispatcher, string deviceId)
+    {
+        var response = dispatcher.DispatchRequest<DeviceRequest, DeviceResponse>(new() { DeviceId = deviceId });
+
+        return response.Device ?? new Device();
+    }
+
+    public static async Task<Device> DispatchDeviceRequestAsync(this IDispatcher dispatcher, string deviceId, CancellationToken cancellationToken)
+    {
+        var response = await dispatcher.DispatchRequestAsync<DeviceRequest, DeviceResponse>(new() { DeviceId = deviceId }, cancellationToken);
+
+        return response.Device ?? new Device();
+    }
 }

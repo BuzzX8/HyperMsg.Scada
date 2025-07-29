@@ -1,4 +1,5 @@
 ﻿using HyperMsg.Messaging;
+using HyperMsg.Scada.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HyperMsg.Scada.WebApi.Controllers;
@@ -25,9 +26,14 @@ public class DeviceController : ControllerBase
     /// <returns>List of devices.</returns>
     [HttpGet]
     [EndpointDescription("Get all devices")]
-    public IActionResult GetAll()
+    [ProducesResponseType(typeof(IEnumerable<DeviceDto>), StatusCodes.Status200OK)]
+    public Task<IEnumerable<DeviceDto>> GetAll()
     {
-        return Ok();
+        return Task.FromResult<IEnumerable<DeviceDto>>(
+        [
+            new() { Id = "1", Name = "Device1", Description = "First device", Type = "TypeA" },
+            new() { Id = "2", Name = "Device2", Description = "Second device", Type = "TypeB" }
+        ]);
     }
 
     /// <summary>
@@ -37,9 +43,10 @@ public class DeviceController : ControllerBase
     /// <returns>The requested device.</returns>
     [HttpGet("{deviceId}")]
     [EndpointDescription("Get device by ID")]
-    public IActionResult GetById(string deviceId)
+    [ProducesResponseType(typeof(DeviceDto), StatusCodes.Status200OK)]
+    public Task<DeviceDto> GetById(string deviceId)
     {
-        return Ok();
+        return Task.FromResult<DeviceDto>(new() { Id = deviceId, Name = "Device" + deviceId, Description = "Description for device " + deviceId, Type = "TypeX" });
     }
 
     /// <summary>
@@ -49,7 +56,8 @@ public class DeviceController : ControllerBase
     /// <returns>The created device.</returns>
     [HttpPost]
     [EndpointDescription("Create a new device")]
-    public IActionResult Create([FromBody]object device)
+    [ProducesResponseType(typeof(DeviceDto), StatusCodes.Status201Created)]
+    public IActionResult Create([FromBody]DeviceDto device)
     {
         return CreatedAtAction(nameof(GetById), new { deviceId = "newDeviceId" }, device);
     }
@@ -62,7 +70,8 @@ public class DeviceController : ControllerBase
     /// <returns>No content.</returns>
     [HttpPut("{deviceId}")]
     [EndpointDescription("Update an existing device")]
-    public IActionResult Edit(string deviceId, [FromBody]object device)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public IActionResult Edit(string deviceId, [FromBody]DeviceDto device)
     {
         return NoContent();
     }

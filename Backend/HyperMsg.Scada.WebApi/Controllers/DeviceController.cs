@@ -3,56 +3,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HyperMsg.Scada.WebApi.Controllers
 {
-    public class DeviceController : Controller
+    [Route("api/[controller]")]
+    public class DeviceController : ControllerBase
     {
-        // GET: DeviceController
         [HttpGet]
-        public ActionResult Index()
+        public IActionResult GetAll()
         {
-            return View();
+            return Ok();
         }
 
-        // GET: DeviceController/5
-        [HttpGet]
-        public ActionResult Details(int id)
+        [HttpGet("{deviceId}")]
+        public IActionResult GetById(string deviceId)
         {
-            return View();
+            return Ok();
         }
 
-        // POST: DeviceController
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create([FromBody]object device)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return CreatedAtAction(nameof(GetById), new { deviceId = "newDeviceId" }, device);
         }
 
-        // POST: DeviceController/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpPut("{deviceId}")]
+        public IActionResult Edit(string deviceId, [FromBody]object device)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return NoContent();
         }
 
-        // DELETE: DeviceController/5
-        public ActionResult Delete(int id)
+        [HttpDelete("{deviceId}")]
+        public ActionResult Delete(string deviceId)
         {
-            return View();
+            return NoContent();
         }
     }
 }

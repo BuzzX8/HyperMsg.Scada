@@ -38,6 +38,6 @@
     protected override void OnInitialized()
     {
         var response = MessagingContext.Dispatcher.DispatchDeviceListRequest();
-        Devices = response?.Devices ?? [];
+        Devices = response ?? [];
     }
 }

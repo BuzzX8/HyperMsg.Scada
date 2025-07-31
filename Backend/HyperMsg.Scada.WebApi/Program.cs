@@ -1,4 +1,5 @@
 using HyperMsg.Messaging;
+using HyperMsg.Scada.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMessagingContext();
+builder.Services.AddSingleton<MessagingContextConfigurator>(MessageHandlers.RegisterHandlers);
 
 var app = builder.Build();
 

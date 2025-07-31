@@ -9,6 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMessagingContext()
+    //.AddMessageHandler<DeviceListRequestHandler>()
     .AddMessagingComponent<MessagingComponent>()
     .AddMessagingWorker();
 

@@ -9,7 +9,7 @@ public static class MessageHandlers
     public static void RegisterHandlers(IMessagingContext messagingContext)
     {
         messagingContext.HandlerRegistry.RegisterDeviceListRequestHandler(HandleDeviceListRequest);
-        //messagingContext.HandlerRegistry.RegisterDeviceRequestHandler(HandleDeviceRequest);
+        messagingContext.HandlerRegistry.RegisterDeviceRequestHandler(HandleDeviceRequest);
     }
 
     public static DeviceListResponse HandleDeviceListRequest(DeviceListRequest request)

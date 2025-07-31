@@ -17,4 +17,18 @@ public static class HandlerRegistryExtensions
     {
         return handlersRegistry.RegisterRequestHandler(handler);
     }
+
+    public static IDisposable RegisterDeviceRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        RequestHandler<DeviceRequest, DeviceResponse> handler)
+    {
+        return handlersRegistry.RegisterRequestHandler(handler);
+    }
+
+    public static IDisposable RegisterDeviceRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        AsyncRequestHandler<DeviceRequest, DeviceResponse> handler)
+    {
+        return handlersRegistry.RegisterRequestHandler(handler);
+    }
 }

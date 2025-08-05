@@ -1,11 +1,31 @@
 ﻿@page "/device-list"
 @using HyperMsg.Messaging
-@using HyperMsg.Scada.Frontend.Shared.Messages
-@using HyperMsg.Scada.Frontend.Shared.Models
-@using HyperMsg.Scada.Frontend.Shared.Components
+@using HyperMsg.Scada.Shared.Messages
+@using HyperMsg.Scada.Shared.Models
 
 <h1>Device list</h1>
-<DeviceListComponent Devices="@Devices" />
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Devices != null)
+        {
+            foreach (var device in Devices)
+            {
+                <tr>
+                    <td>@device.Name</td>
+                    <td>@device.Status</td>
+                    <td>@device.Type</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
 
 @code
 {
@@ -17,7 +37,7 @@
 
     protected override void OnInitialized()
     {
-        var response = MessagingContext.Dispatcher.DispatchRequest<DeviceListRequest, DeviceListResponse>(new ());
-        Devices = response?.Devices ?? [];
+        var response = MessagingContext.Dispatcher.DispatchDeviceListRequest();
+        Devices = response ?? [];
     }
 }

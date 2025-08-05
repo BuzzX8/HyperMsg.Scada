@@ -9,9 +9,13 @@
     <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup>    
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\HyperMsg.Scada.Shared\HyperMsg.Scada.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -49,13 +49,13 @@ public class DeviceController : ControllerBase
     {
         var response = await _dispatcher.DispatchDeviceRequestAsync(deviceId, cancellationToken);
 
-        if (response is null)
+        if (response is null || response.Id == string.Empty)
         {
             _logger.LogWarning("Device with ID {DeviceId} not found", deviceId);
             return NotFound(deviceId);
         }
 
-        return Ok(ToDeviceDto(response));
+        return Ok(ToDeviceDto(response!));
     }
 
     /// <summary>

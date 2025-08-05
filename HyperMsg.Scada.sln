@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{F67D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{BF1F8FF8-05D7-4F83-B745-EA88E9F8544E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Frontend", "Frontend\HyperMsg.Frontend\HyperMsg.Frontend.csproj", "{8A793BA9-039C-4197-8E34-629571D04033}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.WebApp", "Frontend\HyperMsg.Scada.WebApp\HyperMsg.Scada.WebApp.csproj", "{8A793BA9-039C-4197-8E34-629571D04033}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.WebApi", "Backend\HyperMsg.Scada.WebApi\HyperMsg.Scada.WebApi.csproj", "{92CF4712-717D-4BE3-959C-3E1C888A73E2}"
 EndProject

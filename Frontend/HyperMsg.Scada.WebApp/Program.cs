@@ -1,5 +1,5 @@
-using HyperMsg.Frontend.Components;
 using HyperMsg.Messaging;
+using HyperMsg.Scada.WebApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 

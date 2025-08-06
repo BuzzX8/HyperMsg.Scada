@@ -80,7 +80,7 @@ public class DeviceController : ControllerBase
     [HttpPut("{deviceId}")]
     [EndpointDescription("Update an existing device")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public IActionResult Edit(string deviceId, [FromBody]DeviceDto device)
+    public IActionResult Update(string deviceId, [FromBody]DeviceDto device)
     {
         return NoContent();
     }

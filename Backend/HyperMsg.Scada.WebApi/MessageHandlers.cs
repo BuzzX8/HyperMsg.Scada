@@ -12,29 +12,23 @@ public static class MessageHandlers
         messagingContext.HandlerRegistry.RegisterDeviceRequestHandler(HandleDeviceRequest);
     }
 
-    public static DeviceListResponse HandleDeviceListRequest(DeviceListRequest request)
+    public static IEnumerable<Device> HandleDeviceListRequest(string _)
     {
-        // Logic to handle device list request
-        // This is a placeholder implementation
-        var devices = new List<Device>
-        {
+        return
+        [
             new () { Id = "1", Name = "Device 1" },
             new () { Id = "2", Name = "Device 2" }
-        };
-
-        return new DeviceListResponse(devices);
+        ];
     }
 
-    public static DeviceResponse HandleDeviceRequest(DeviceRequest request)
+    public static Device HandleDeviceRequest(string userId, string deviceId)
     {
-        // Logic to handle device request
-        // This is a placeholder implementation
-        return new DeviceResponse(new Device
+        return new()
         {
-            Id = request.DeviceId,
-            Name = $"Device {request.DeviceId}",
+            Id = deviceId,
+            Name = $"Device {deviceId}",
             Status = "Online",
             Type = "Sensor"
-        });
+        };
     }
 }

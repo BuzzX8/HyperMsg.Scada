@@ -1,4 +1,5 @@
 ﻿using HyperMsg.Messaging;
+using HyperMsg.Scada.Shared.Models;
 
 namespace HyperMsg.Scada.Shared.Messages;
 
@@ -6,57 +7,107 @@ public static class HandlerRegistryExtensions
 {
     public static IDisposable RegisterDeviceListRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        RequestHandler<DeviceListRequest, DeviceListResponse> handler)
+        RequestHandler<string, IEnumerable<Device>> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        RequestHandler<DeviceListRequest, DeviceListResponse> requestHandler = request =>
+        {
+            var response = handler(request.UserId);
+            return new DeviceListResponse(response);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
     public static IDisposable RegisterDeviceListRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        AsyncRequestHandler<DeviceListRequest, DeviceListResponse> handler)
+        AsyncRequestHandler<string, IEnumerable<Device>> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        AsyncRequestHandler<DeviceListRequest, DeviceListResponse> requestHandler = async (request, ctx) =>
+        {
+            var response = await handler(request.UserId, ctx);
+            return new DeviceListResponse(response);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
     public static IDisposable RegisterDeviceRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        RequestHandler<DeviceRequest, DeviceResponse> handler)
+        Func<string, string, Device> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        RequestHandler<DeviceRequest, DeviceResponse> requestHandler = request =>
+        {
+            var device = handler(request.UserId, request.DeviceId);
+            return new DeviceResponse(device);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
     public static IDisposable RegisterDeviceRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        AsyncRequestHandler<DeviceRequest, DeviceResponse> handler)
+        Func<string, string, CancellationToken, Task<Device>> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        AsyncRequestHandler<DeviceRequest, DeviceResponse> requestHandler = async (request, ctx) =>
+        {
+            var device = await handler(request.UserId, request.DeviceId, ctx);
+            return new DeviceResponse(device);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
     public static IDisposable RegisterDeviceTypeListRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        RequestHandler<DeviceTypeListRequest, DeviceTypeListResponse> handler)
+        Func<string, IEnumerable<DeviceType>> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        RequestHandler<DeviceTypeListRequest, DeviceTypeListResponse> requestHandler = request =>
+        {
+            var response = handler(request.UserId);
+
+            return new(response);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
     public static IDisposable RegisterDeviceTypeListRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        AsyncRequestHandler<DeviceTypeListRequest, DeviceTypeListResponse> handler)
+        Func<string, CancellationToken, IEnumerable<DeviceType>> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        AsyncRequestHandler<DeviceTypeListRequest, DeviceTypeListResponse> requestHandler = async (request, ctx) =>
+        {
+            var response = handler(request.UserId, ctx);
+            return new(response);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
     public static IDisposable RegisterDeviceTypeRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        RequestHandler<DeviceTypeRequest, DeviceTypeResponse> handler)
+        Func<string, string, DeviceType> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        RequestHandler<DeviceTypeRequest, DeviceTypeResponse> requestHandler = request =>
+        {
+            var deviceType = handler(request.UserId, request.DeviceTypeId);
+
+            return new DeviceTypeResponse(deviceType);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
     public static IDisposable RegisterDeviceTypeRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        AsyncRequestHandler<DeviceTypeRequest, DeviceTypeResponse> handler)
+        Func<string, string, CancellationToken, Task<DeviceType>> handler)
     {
-        return handlersRegistry.RegisterRequestHandler(handler);
+        AsyncRequestHandler<DeviceTypeRequest, DeviceTypeResponse> requestHandler = async (request, ctx) =>
+        {
+            var deviceType = await handler(request.UserId, request.DeviceTypeId, ctx);
+            return new DeviceTypeResponse(deviceType);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 }

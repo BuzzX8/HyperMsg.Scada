@@ -29,8 +29,7 @@ public class DeviceTypeControllerTests
         [
             new () { Id = "1", Name = "TypeA", Description = "Desc" }
         ];
-        messageBroker.RegisterDeviceTypeListRequestHandler(
-            _ => new DeviceTypeListResponse(deviceTypes));
+        messageBroker.RegisterDeviceTypeListRequestHandler(_ => deviceTypes);
 
         var result = await _controller.GetAll(CancellationToken.None);
 

@@ -37,7 +37,9 @@
 
     protected override void OnInitialized()
     {
-        var response = MessagingContext.Dispatcher.DispatchDeviceListRequest();
-        Devices = response ?? [];
+        var userId = string.Empty;
+        var response = MessagingContext.Dispatcher.DispatchDeviceListRequest(userId);
+        
+        Devices = response;
     }
 }

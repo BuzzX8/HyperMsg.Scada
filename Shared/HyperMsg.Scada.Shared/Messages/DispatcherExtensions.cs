@@ -5,59 +5,59 @@ namespace HyperMsg.Scada.Shared.Messages;
 
 public static class DispatcherExtensions
 {
-    public static IEnumerable<Device> DispatchDeviceListRequest(this IDispatcher dispatcher)
+    public static IEnumerable<Device> DispatchDeviceListRequest(this IDispatcher dispatcher, string userId)
     {
-        var response = dispatcher.DispatchRequest<DeviceListRequest, DeviceListResponse>(new());
+        var response = dispatcher.DispatchRequest<DeviceListRequest, DeviceListResponse>(new(userId));
 
-        return response?.Devices ?? [];
+        return response.Devices;
     }
 
-    public static async Task<IEnumerable<Device>> DispatchDeviceListRequestAsync(this IDispatcher dispatcher, CancellationToken cancellationToken)
+    public static async Task<IEnumerable<Device>> DispatchDeviceListRequestAsync(this IDispatcher dispatcher, string userId, CancellationToken cancellationToken)
     {
-        var response = await dispatcher.DispatchRequestAsync<DeviceListRequest, DeviceListResponse>(new(), cancellationToken);
+        var response = await dispatcher.DispatchRequestAsync<DeviceListRequest, DeviceListResponse>(new(userId), cancellationToken);
 
-        return response?.Devices ?? [];
+        return response.Devices;
     }
 
     public static Device DispatchDeviceRequest(this IDispatcher dispatcher, string deviceId)
     {
         var response = dispatcher.DispatchRequest<DeviceRequest, DeviceResponse>(new() { DeviceId = deviceId });
 
-        return response.Device ?? new Device();
+        return response.Device;
     }
 
     public static async Task<Device> DispatchDeviceRequestAsync(this IDispatcher dispatcher, string deviceId, CancellationToken cancellationToken)
     {
         var response = await dispatcher.DispatchRequestAsync<DeviceRequest, DeviceResponse>(new() { DeviceId = deviceId }, cancellationToken);
 
-        return response.Device ?? new Device();
+        return response.Device;
     }
 
     public static IEnumerable<DeviceType> DispatchDeviceTypeListRequest(this IDispatcher dispatcher)
     {
         var response = dispatcher.DispatchRequest<DeviceTypeListRequest, DeviceTypeListResponse>(new());
         
-        return response.DeviceTypes ?? [];
+        return response.DeviceTypes;
     }
 
     public static async Task<IEnumerable<DeviceType>> DispatchDeviceTypeListRequestAsync(this IDispatcher dispatcher, CancellationToken cancellationToken)
     {
         var response = await dispatcher.DispatchRequestAsync<DeviceTypeListRequest, DeviceTypeListResponse>(new(), cancellationToken);
         
-        return response.DeviceTypes ?? [];
+        return response.DeviceTypes;
     }
 
     public static DeviceType DispatchDeviceTypeRequest(this IDispatcher dispatcher, string deviceTypeId)
     {
         var response = dispatcher.DispatchRequest<DeviceTypeRequest, DeviceTypeResponse>(new() { DeviceTypeId = deviceTypeId });
 
-        return response.DeviceType ?? new DeviceType();
+        return response.DeviceType;
     }
 
     public static async Task<DeviceType> DispatchDeviceTypeRequestAsync(this IDispatcher dispatcher, string deviceTypeId, CancellationToken cancellationToken)
     {
         var response = await dispatcher.DispatchRequestAsync<DeviceTypeRequest, DeviceTypeResponse>(new() { DeviceTypeId = deviceTypeId }, cancellationToken);
 
-        return response.DeviceType ?? new DeviceType();
+        return response.DeviceType;
     }
 }

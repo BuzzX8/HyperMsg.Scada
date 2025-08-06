@@ -31,7 +31,8 @@ public class DeviceController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<DeviceDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var response = await _dispatcher.DispatchDeviceListRequestAsync(cancellationToken);
+        var userId = User.FindFirst("sub")?.Value ?? string.Empty;
+        var response = await _dispatcher.DispatchDeviceListRequestAsync(userId, cancellationToken);
 
         return Ok(response.Select(ToDeviceDto));
     }

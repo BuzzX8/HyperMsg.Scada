@@ -26,7 +26,7 @@ public class DeviceControllerTests
     public async Task GetAll_ReturnsOk_WithDeviceList()
     {
         var devices = new List<Device> { new() { Id = "1", Name = "Test", Type = "TypeA" } };
-        messageBroker.RegisterDeviceListRequestHandler(_ => new(devices));
+        messageBroker.RegisterDeviceListRequestHandler(_ => devices);
 
         var result = await _controller.GetAll(CancellationToken.None);
 
@@ -39,7 +39,7 @@ public class DeviceControllerTests
     public async Task GetById_ReturnsOk_WhenDeviceExists()
     {
         var device = new Device { Id = "1", Name = "Test", Type = "TypeA" };
-        messageBroker.RegisterDeviceRequestHandler(_ => new(device));
+        messageBroker.RegisterDeviceRequestHandler((_, _) => device);
 
         var result = await _controller.GetById("1", CancellationToken.None);
 
@@ -51,7 +51,7 @@ public class DeviceControllerTests
     [Fact]
     public async Task GetById_ReturnsNotFound_WhenDeviceDoesNotExist()
     {
-        messageBroker.RegisterDeviceRequestHandler(_ => new(null!));
+        messageBroker.RegisterDeviceRequestHandler((_, _) => null!);
 
         var result = await _controller.GetById("2", CancellationToken.None);
 

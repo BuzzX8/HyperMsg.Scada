@@ -41,9 +41,13 @@ public class DeviceTypeControllerTests
     [Fact]
     public async Task GetById_ReturnsOk_WhenDeviceTypeExists()
     {
-        var deviceType = new DeviceTypeDto { Id = "1", Name = "TypeA", Description = "Desc" };
-        //A.CallTo(() => _dispatcher.DispatchDeviceTypeRequestAsync("1", A<CancellationToken>._))
-        //    .Returns(deviceType);
+        var deviceType = new DeviceType 
+        { 
+            Id = "1", 
+            Name = "TypeA", 
+            Description = "Desc" 
+        };
+        messageBroker.RegisterDeviceTypeRequestHandler((userId, deviceTypeId) => deviceType);
 
         var result = await _controller.GetById("1", CancellationToken.None);
 
@@ -55,8 +59,7 @@ public class DeviceTypeControllerTests
     [Fact]
     public async Task GetById_ReturnsNotFound_WhenDeviceTypeDoesNotExist()
     {
-        //A.CallTo(() => _dispatcher.DispatchDeviceTypeRequestAsync("2", A<CancellationToken>._))
-        //    .Returns((DeviceTypeDto)null);
+        messageBroker.RegisterDeviceTypeRequestHandler((userId, deviceTypeId) => null!);
 
         var result = await _controller.GetById("2", CancellationToken.None);
 
@@ -64,7 +67,7 @@ public class DeviceTypeControllerTests
     }
 
     [Fact]
-    public async Task Create_ReturnsOk()
+    public async Task Create_Returns_CreatedAtActionResult()
     {
         var createDto = new CreateDeviceTypeDto 
         { 
@@ -74,7 +77,7 @@ public class DeviceTypeControllerTests
 
         var result = await _controller.Create(createDto, CancellationToken.None);
 
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<CreatedAtActionResult>(result);
     }
 
     [Fact]

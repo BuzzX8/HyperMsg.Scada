@@ -28,7 +28,7 @@ public class DeviceTypeController : ControllerBase
     {
         var response = await _dispatcher.DispatchDeviceTypeListRequestAsync(cancellationToken);
 
-        return Ok(response);
+        return Ok(response.Select(ToDeviceTypeDto));
     }
 
     [HttpGet("{deviceTypeId}")]
@@ -61,7 +61,7 @@ public class DeviceTypeController : ControllerBase
             //CommandTemplates = deviceTypeDto.CommandTemplates.Select(c => c.ToModel())
         };
 
-        var response = await _dispatcher.DispatchCreateDeviceTypeRequestAsync(deviceType, cancellationToken);
+        var response = await _dispatcher.DispatchCreateDeviceTypeRequestAsync("", deviceType, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { deviceId = "newDeviceId" }, deviceType);
     }
@@ -69,24 +69,25 @@ public class DeviceTypeController : ControllerBase
     [HttpPut("{deviceTypeId}")]
     [EndpointDescription("Update an existing device type")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(DeviceTypeDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DeviceTypeDto), StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update(string deviceTypeId, DeviceTypeDto deviceTypeDto, CancellationToken cancellationToken)
     {
-        //var deviceType = new HyperMsg.Scada.Shared.Models.DeviceType
-        //{
-        //    Id = deviceTypeId,
-        //    Name = deviceTypeDto.Name,
-        //    Description = deviceTypeDto.Description,
-        //    //MetricTemplates = deviceTypeDto.MetricTemplates.Select(m => m.ToModel()),
-        //    //CommandTemplates = deviceTypeDto.CommandTemplates.Select(c => c.ToModel())
-        //};
-        //var response = await _dispatcher.DispatchDeviceTypeUpdateRequestAsync(deviceType, cancellationToken);
-        return Ok();// ToDeviceTypeDto(response);
+        DeviceType deviceType = new()
+        {
+            Id = deviceTypeId,
+            Name = deviceTypeDto.Name,
+            Description = deviceTypeDto.Description,
+            //MetricTemplates = deviceTypeDto.MetricTemplates.Select(m => m.ToModel()),
+            //CommandTemplates = deviceTypeDto.CommandTemplates.Select(c => c.ToModel())
+        };
+        //var response = await _dispatcher.DispatchUpdateDeviceTypeRequestAsync(deviceType, cancellationToken);
+
+        return NoContent();
     }
 
-    public static DeviceTypeDto ToDeviceTypeDto(HyperMsg.Scada.Shared.Models.DeviceType deviceType)
+    public static DeviceTypeDto ToDeviceTypeDto(DeviceType deviceType)
     {
-        return new DeviceTypeDto
+        return new()
         {
             Id = deviceType.Id,
             Name = deviceType.Name,

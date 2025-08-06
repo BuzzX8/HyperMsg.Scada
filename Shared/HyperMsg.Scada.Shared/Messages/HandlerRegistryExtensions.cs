@@ -5,6 +5,8 @@ namespace HyperMsg.Scada.Shared.Messages;
 
 public static class HandlerRegistryExtensions
 {
+    #region Device Requests
+
     public static IDisposable RegisterDeviceListRequestHandler(
         this IHandlerRegistry handlersRegistry,
         RequestHandler<string, IEnumerable<Device>> handler)
@@ -56,6 +58,10 @@ public static class HandlerRegistryExtensions
 
         return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
+
+    #endregion
+
+    #region Device Type Requests
 
     public static IDisposable RegisterDeviceTypeListRequestHandler(
         this IHandlerRegistry handlersRegistry,
@@ -119,7 +125,7 @@ public static class HandlerRegistryExtensions
         {
             var deviceType = new DeviceType
             {
-                Name = request.Name,
+                //Name = request.Name,
                 //Description = request.Description,
                 //MetricTemplates = request.MetricTemplates.Select(m => m.ToModel())
             };
@@ -139,7 +145,7 @@ public static class HandlerRegistryExtensions
         {
             var deviceType = new DeviceType
             {
-                Name = request.Name,
+                //Name = request.Name,
                 //Description = request.Description,
                 //MetricTemplates = request.MetricTemplates.Select(m => m.ToModel())
             };
@@ -148,4 +154,6 @@ public static class HandlerRegistryExtensions
         };
         return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
+
+    #endregion
 }

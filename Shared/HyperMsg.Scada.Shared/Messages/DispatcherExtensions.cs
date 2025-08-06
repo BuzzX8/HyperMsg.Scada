@@ -5,6 +5,8 @@ namespace HyperMsg.Scada.Shared.Messages;
 
 public static class DispatcherExtensions
 {
+    #region Device Requests
+
     public static IEnumerable<Device> DispatchDeviceListRequest(this IDispatcher dispatcher, string userId)
     {
         var response = dispatcher.DispatchRequest<DeviceListRequest, DeviceListResponse>(new(userId));
@@ -32,6 +34,10 @@ public static class DispatcherExtensions
 
         return response.Device;
     }
+
+    #endregion
+
+    #region Device Type Requests
 
     public static IEnumerable<DeviceType> DispatchDeviceTypeListRequest(this IDispatcher dispatcher)
     {
@@ -61,29 +67,35 @@ public static class DispatcherExtensions
         return response.DeviceType;
     }
 
-    public static string DispatchCreateDeviceTypeRequest(this IDispatcher dispatcher, DeviceType request)
+    public static string DispatchCreateDeviceTypeRequest(this IDispatcher dispatcher, string userId, DeviceType deviceType)
     {
-        var createRequest = new CreateDeviceTypeRequest
-        {
-            Name = request.Name,
-            //Description = request.Description,
-            //MetricTemplates = request.MetricTemplates.Select(m => m.ToDto()).ToList()
-        };
+        var createRequest = new CreateDeviceTypeRequest(userId, deviceType);
         var response = dispatcher.DispatchRequest<CreateDeviceTypeRequest, CreateDeviceTypeResponse>(createRequest);
 
         return response.DeviceTypeId;
     }
 
-    public static async Task<string> DispatchCreateDeviceTypeRequestAsync(this IDispatcher dispatcher, DeviceType request, CancellationToken cancellationToken)
+    public static async Task<string> DispatchCreateDeviceTypeRequestAsync(this IDispatcher dispatcher, string userId, DeviceType deviceType, CancellationToken cancellationToken)
     {
-        var createRequest = new CreateDeviceTypeRequest
-        {
-            Name = request.Name,
-            //Description = request.Description,
-            //MetricTemplates = request.MetricTemplates.Select(m => m.ToDto()).ToList()
-        };
+        var createRequest = new CreateDeviceTypeRequest(userId, deviceType);
         var response = await dispatcher.DispatchRequestAsync<CreateDeviceTypeRequest, CreateDeviceTypeResponse>(createRequest, cancellationToken);
 
         return response.DeviceTypeId;
     }
+
+    public static void DispatchUpdateDeviceTypeRequest(this IDispatcher dispatcher, string userId, DeviceType deviceType)
+    {
+        var updateRequest = new UpdateDeviceTypeRequest(userId, deviceType);
+
+        dispatcher.DispatchRequest<UpdateDeviceTypeRequest, UpdateDeviceTypeResponse>(updateRequest);
+    }
+
+    public static async Task DispatchUpdateDeviceTypeRequestAsync(this IDispatcher dispatcher, string userId, DeviceType deviceType, CancellationToken cancellationToken)
+    {
+        var updateRequest = new UpdateDeviceTypeRequest(userId, deviceType);
+
+        await dispatcher.DispatchRequestAsync<UpdateDeviceTypeRequest, UpdateDeviceTypeResponse>(updateRequest, cancellationToken);
+    }
+
+    #endregion
 }

@@ -46,4 +46,18 @@ public static class DispatcherExtensions
         
         return response.DeviceTypes ?? [];
     }
+
+    public static DeviceType DispatchDeviceTypeRequest(this IDispatcher dispatcher, string deviceTypeId)
+    {
+        var response = dispatcher.DispatchRequest<DeviceTypeRequest, DeviceTypeResponse>(new() { DeviceTypeId = deviceTypeId });
+
+        return response.DeviceType ?? new DeviceType();
+    }
+
+    public static async Task<DeviceType> DispatchDeviceTypeRequestAsync(this IDispatcher dispatcher, string deviceTypeId, CancellationToken cancellationToken)
+    {
+        var response = await dispatcher.DispatchRequestAsync<DeviceTypeRequest, DeviceTypeResponse>(new() { DeviceTypeId = deviceTypeId }, cancellationToken);
+
+        return response.DeviceType ?? new DeviceType();
+    }
 }

@@ -36,13 +36,15 @@ public class DeviceTypeController : ControllerBase
     [ProducesResponseType(typeof(DeviceTypeDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetById(string deviceTypeId, CancellationToken cancellationToken)
     {
-        //var response = await _dispatcher.DispatchDeviceTypeRequestAsync(deviceTypeId, cancellationToken);
-        //if (response is null || response.Id == string.Empty)
-        //{
-        //    _logger.LogWarning("Device type with ID {DeviceTypeId} not found", deviceTypeId);
-        //    return NotFound(deviceTypeId);
-        //}
-        return Ok();// ToDeviceTypeDto(response!);
+        var response = await _dispatcher.DispatchDeviceTypeRequestAsync(deviceTypeId, cancellationToken);
+        
+        if (response is null || response.Id == string.Empty)
+        {
+            _logger.LogWarning("Device type with ID {DeviceTypeId} not found", deviceTypeId);
+            return NotFound(deviceTypeId);
+        }
+
+        return Ok(ToDeviceTypeDto(response!));
     }
 
     [HttpPost]

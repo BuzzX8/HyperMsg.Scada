@@ -60,4 +60,30 @@ public static class DispatcherExtensions
 
         return response.DeviceType;
     }
+
+    public static string DispatchCreateDeviceTypeRequest(this IDispatcher dispatcher, DeviceType request)
+    {
+        var createRequest = new CreateDeviceTypeRequest
+        {
+            Name = request.Name,
+            //Description = request.Description,
+            //MetricTemplates = request.MetricTemplates.Select(m => m.ToDto()).ToList()
+        };
+        var response = dispatcher.DispatchRequest<CreateDeviceTypeRequest, CreateDeviceTypeResponse>(createRequest);
+
+        return response.DeviceTypeId;
+    }
+
+    public static async Task<string> DispatchCreateDeviceTypeRequestAsync(this IDispatcher dispatcher, DeviceType request, CancellationToken cancellationToken)
+    {
+        var createRequest = new CreateDeviceTypeRequest
+        {
+            Name = request.Name,
+            //Description = request.Description,
+            //MetricTemplates = request.MetricTemplates.Select(m => m.ToDto()).ToList()
+        };
+        var response = await dispatcher.DispatchRequestAsync<CreateDeviceTypeRequest, CreateDeviceTypeResponse>(createRequest, cancellationToken);
+
+        return response.DeviceTypeId;
+    }
 }

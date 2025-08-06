@@ -12,7 +12,7 @@ public static class HandlerRegistryExtensions
         RequestHandler<DeviceListRequest, DeviceListResponse> requestHandler = request =>
         {
             var response = handler(request.UserId);
-            return new DeviceListResponse(response);
+            return new(response);
         };
 
         return handlersRegistry.RegisterRequestHandler(requestHandler);
@@ -25,7 +25,7 @@ public static class HandlerRegistryExtensions
         AsyncRequestHandler<DeviceListRequest, DeviceListResponse> requestHandler = async (request, ctx) =>
         {
             var response = await handler(request.UserId, ctx);
-            return new DeviceListResponse(response);
+            return new(response);
         };
 
         return handlersRegistry.RegisterRequestHandler(requestHandler);
@@ -38,7 +38,7 @@ public static class HandlerRegistryExtensions
         RequestHandler<DeviceRequest, DeviceResponse> requestHandler = request =>
         {
             var device = handler(request.UserId, request.DeviceId);
-            return new DeviceResponse(device);
+            return new(device);
         };
 
         return handlersRegistry.RegisterRequestHandler(requestHandler);
@@ -51,7 +51,7 @@ public static class HandlerRegistryExtensions
         AsyncRequestHandler<DeviceRequest, DeviceResponse> requestHandler = async (request, ctx) =>
         {
             var device = await handler(request.UserId, request.DeviceId, ctx);
-            return new DeviceResponse(device);
+            return new(device);
         };
 
         return handlersRegistry.RegisterRequestHandler(requestHandler);
@@ -92,7 +92,7 @@ public static class HandlerRegistryExtensions
         {
             var deviceType = handler(request.UserId, request.DeviceTypeId);
 
-            return new DeviceTypeResponse(deviceType);
+            return new(deviceType);
         };
 
         return handlersRegistry.RegisterRequestHandler(requestHandler);
@@ -105,9 +105,47 @@ public static class HandlerRegistryExtensions
         AsyncRequestHandler<DeviceTypeRequest, DeviceTypeResponse> requestHandler = async (request, ctx) =>
         {
             var deviceType = await handler(request.UserId, request.DeviceTypeId, ctx);
-            return new DeviceTypeResponse(deviceType);
+            return new(deviceType);
         };
 
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterCreateDeviceTypeRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<DeviceType, string> handler)
+    {
+        RequestHandler<CreateDeviceTypeRequest, CreateDeviceTypeResponse> requestHandler = request =>
+        {
+            var deviceType = new DeviceType
+            {
+                Name = request.Name,
+                //Description = request.Description,
+                //MetricTemplates = request.MetricTemplates.Select(m => m.ToModel())
+            };
+            var deviceTypeId = handler(deviceType);
+
+            return new(deviceTypeId);
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterCreateDeviceTypeRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<DeviceType, CancellationToken, Task<string>> handler)
+    {
+        AsyncRequestHandler<CreateDeviceTypeRequest, CreateDeviceTypeResponse> requestHandler = async (request, ctx) =>
+        {
+            var deviceType = new DeviceType
+            {
+                Name = request.Name,
+                //Description = request.Description,
+                //MetricTemplates = request.MetricTemplates.Select(m => m.ToModel())
+            };
+            var deviceTypeId = await handler(deviceType, ctx);
+            return new(deviceTypeId);
+        };
         return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 }

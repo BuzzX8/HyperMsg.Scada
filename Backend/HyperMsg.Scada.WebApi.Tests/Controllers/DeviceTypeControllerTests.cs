@@ -66,9 +66,13 @@ public class DeviceTypeControllerTests
     [Fact]
     public async Task Create_ReturnsOk()
     {
-        var deviceTypeDto = new DeviceTypeDto { Id = "newTypeId", Name = "NewType", Description = "Desc" };
+        var createDto = new CreateDeviceTypeDto 
+        { 
+            Name = "NewType", 
+            Description = "Desc" 
+        };
 
-        var result = await _controller.Create(deviceTypeDto, CancellationToken.None);
+        var result = await _controller.Create(createDto, CancellationToken.None);
 
         Assert.IsType<OkResult>(result);
     }

@@ -1,5 +1,6 @@
 ﻿using HyperMsg.Messaging;
 using HyperMsg.Scada.Shared.Messages;
+using HyperMsg.Scada.Shared.Models;
 using HyperMsg.Scada.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,18 +51,19 @@ public class DeviceTypeController : ControllerBase
     [HttpPost]
     [EndpointDescription("Create a new device type")]
     [ProducesResponseType(typeof(DeviceTypeDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Create(DeviceTypeDto deviceTypeDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(CreateDeviceTypeDto createDto, CancellationToken cancellationToken)
     {
-        //var deviceType = new HyperMsg.Scada.Shared.Models.DeviceType
-        //{
-        //    Id = deviceTypeDto.Id,
-        //    Name = deviceTypeDto.Name,
-        //    Description = deviceTypeDto.Description,
-        //    //MetricTemplates = deviceTypeDto.MetricTemplates.Select(m => m.ToModel()),
-        //    //CommandTemplates = deviceTypeDto.CommandTemplates.Select(c => c.ToModel())
-        //};
-        //var response = await _dispatcher.DispatchDeviceTypeCreateRequestAsync(deviceType, cancellationToken);
-        return Ok();// ToDeviceTypeDto(response);
+        var deviceType = new DeviceType
+        {
+            Name = createDto.Name,
+            Description = createDto.Description,
+            //MetricTemplates = deviceTypeDto.MetricTemplates.Select(m => m.ToModel()),
+            //CommandTemplates = deviceTypeDto.CommandTemplates.Select(c => c.ToModel())
+        };
+
+        var response = await _dispatcher.DispatchCreateDeviceTypeRequestAsync(deviceType, cancellationToken);
+
+        return CreatedAtAction(nameof(GetById), new { deviceId = "newDeviceId" }, deviceType);
     }
 
     [HttpPut("{deviceTypeId}")]

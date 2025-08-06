@@ -12,11 +12,13 @@ public class DeviceTypeController : ControllerBase
 {
     private readonly IDispatcher _dispatcher;
     private readonly ILogger<DeviceTypeController> _logger;
+
     public DeviceTypeController(IDispatcher dispatcher, ILogger<DeviceTypeController> logger)
     {
         _dispatcher = dispatcher;
         _logger = logger;
     }
+
     /// <summary>
     /// Gets all device types.
     /// </summary>
@@ -56,14 +58,12 @@ public class DeviceTypeController : ControllerBase
         var deviceType = new DeviceType
         {
             Name = createDto.Name,
-            Description = createDto.Description,
-            //MetricTemplates = deviceTypeDto.MetricTemplates.Select(m => m.ToModel()),
-            //CommandTemplates = deviceTypeDto.CommandTemplates.Select(c => c.ToModel())
+            Description = createDto.Description
         };
 
         var response = await _dispatcher.DispatchCreateDeviceTypeRequestAsync("", deviceType, cancellationToken);
 
-        return CreatedAtAction(nameof(GetById), new { deviceId = "newDeviceId" }, deviceType);
+        return CreatedAtAction(nameof(GetById), new { deviceId = response }, deviceType);
     }
 
     [HttpPut("{deviceTypeId}")]
@@ -76,11 +76,10 @@ public class DeviceTypeController : ControllerBase
         {
             Id = deviceTypeId,
             Name = deviceTypeDto.Name,
-            Description = deviceTypeDto.Description,
-            //MetricTemplates = deviceTypeDto.MetricTemplates.Select(m => m.ToModel()),
-            //CommandTemplates = deviceTypeDto.CommandTemplates.Select(c => c.ToModel())
+            Description = deviceTypeDto.Description
         };
-        //var response = await _dispatcher.DispatchUpdateDeviceTypeRequestAsync(deviceType, cancellationToken);
+
+        await _dispatcher.DispatchUpdateDeviceTypeRequestAsync("", deviceType, cancellationToken);
 
         return NoContent();
     }
@@ -91,9 +90,7 @@ public class DeviceTypeController : ControllerBase
         {
             Id = deviceType.Id,
             Name = deviceType.Name,
-            Description = deviceType.Description,
-            //MetricTemplates = deviceType.MetricTemplates.Select(m => m.ToJSObject()),
-            //CommandTemplates = deviceType.CommandTemplates.Select(c => c.ToJSObject())
+            Description = deviceType.Description
         };
     }
 }

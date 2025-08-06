@@ -81,12 +81,17 @@ public class DeviceTypeControllerTests
     }
 
     [Fact]
-    public async Task Update_ReturnsOk()
+    public async Task Update_Returns_NoContent()
     {
-        var deviceTypeDto = new DeviceTypeDto { Id = "1", Name = "EditType", Description = "Desc" };
+        var deviceTypeDto = new DeviceTypeDto 
+        { 
+            Id = "1", 
+            Name = "EditType", 
+            Description = "Desc" 
+        };
 
         var result = await _controller.Update("1", deviceTypeDto, CancellationToken.None);
 
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<NoContentResult>(result);
     }
 }

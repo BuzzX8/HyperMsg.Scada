@@ -1,4 +1,5 @@
 ﻿using HyperMsg.Messaging;
+using HyperMsg.Scada.Shared.Messages;
 using HyperMsg.Scada.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,8 +25,9 @@ public class DeviceTypeController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<DeviceTypeDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        //var response = await _dispatcher.DispatchDeviceTypeListRequestAsync(cancellationToken);
-        return Ok();// response);
+        var response = await _dispatcher.DispatchDeviceTypeListRequestAsync(cancellationToken);
+
+        return Ok(response);
     }
 
     [HttpGet("{deviceTypeId}")]

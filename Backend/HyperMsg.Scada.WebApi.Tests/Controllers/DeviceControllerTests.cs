@@ -70,11 +70,11 @@ public class DeviceControllerTests
     }
 
     [Fact]
-    public void Edit_ReturnsNoContent()
+    public void Update_ReturnsNoContent()
     {
         var deviceDto = new DeviceDto { Id = "1", Name = "Edit", Type = "TypeC" };
 
-        var result = _controller.Edit("1", deviceDto);
+        var result = _controller.Update("1", deviceDto);
 
         Assert.IsType<NoContentResult>(result);
     }

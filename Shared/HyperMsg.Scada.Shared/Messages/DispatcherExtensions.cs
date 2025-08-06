@@ -32,4 +32,18 @@ public static class DispatcherExtensions
 
         return response.Device ?? new Device();
     }
+
+    public static IEnumerable<DeviceType> DispatchDeviceTypeListRequest(this IDispatcher dispatcher)
+    {
+        var response = dispatcher.DispatchRequest<DeviceTypeListRequest, DeviceTypeListResponse>(new());
+        
+        return response.DeviceTypes ?? [];
+    }
+
+    public static async Task<IEnumerable<DeviceType>> DispatchDeviceTypeListRequestAsync(this IDispatcher dispatcher, CancellationToken cancellationToken)
+    {
+        var response = await dispatcher.DispatchRequestAsync<DeviceTypeListRequest, DeviceTypeListResponse>(new(), cancellationToken);
+        
+        return response.DeviceTypes ?? [];
+    }
 }

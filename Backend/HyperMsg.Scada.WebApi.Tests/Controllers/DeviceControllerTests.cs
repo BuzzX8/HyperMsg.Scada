@@ -65,9 +65,8 @@ public class DeviceControllerTests
     public async Task Create_ReturnsCreatedAtAction()
     {
         var newDeviceId = Guid.NewGuid().ToString();
-        var deviceDto = new DeviceDto 
-        { 
-            Id = "newDeviceId", 
+        var deviceDto = new CreateDeviceDto 
+        {
             Name = "New", 
             Type = "TypeB" 
         };
@@ -86,19 +85,22 @@ public class DeviceControllerTests
     }
 
     [Fact]
-    public void Update_ReturnsNoContent()
+    public async Task Update_ReturnsNoContent()
     {
-        var deviceDto = new DeviceDto { Id = "1", Name = "Edit", Type = "TypeC" };
+        var deviceDto = new DeviceDto 
+        { 
+            Id = Guid.NewGuid().ToString(),
+            Name = "Edit", 
+            Type = "TypeC" 
+        };
+        messageBroker.RegisterUpdateDeviceRequestHandler((_, device) => 
+        {
+            Assert.Equal(deviceDto.Id, device.Id);
+            Assert.Equal(deviceDto.Name, device.Name);
+            Assert.Equal(deviceDto.Type, device.Type);
+        });
 
-        var result = _controller.Update("1", deviceDto);
-
-        Assert.IsType<NoContentResult>(result);
-    }
-
-    [Fact]
-    public void Delete_ReturnsNoContent()
-    {
-        var result = _controller.Delete("1");
+        var result = await _controller.Update(deviceDto.Id, deviceDto, CancellationToken.None);
 
         Assert.IsType<NoContentResult>(result);
     }

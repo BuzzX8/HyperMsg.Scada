@@ -68,11 +68,10 @@ public class DeviceController : ControllerBase
     [HttpPost]
     [EndpointDescription("Create a new device")]
     [ProducesResponseType(typeof(DeviceDto), StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create([FromBody]DeviceDto device, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody]CreateDeviceDto device, CancellationToken cancellationToken)
     {
         var newDevice = new Device
         {
-            Id = device.Id,
             Name = device.Name,
             Type = device.Type
         };
@@ -91,8 +90,19 @@ public class DeviceController : ControllerBase
     [HttpPut("{deviceId}")]
     [EndpointDescription("Update an existing device")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public IActionResult Update(string deviceId, [FromBody]DeviceDto device)
+    public async Task<IActionResult> Update(string deviceId, [FromBody]DeviceDto device, CancellationToken cancellationToken)
     {
+        var deviceToUpdate = new Device
+        {
+            Id = deviceId,
+            Name = device.Name,
+            Type = device.Type
+        };
+
+        var userId = User?.FindFirst("sub")?.Value ?? string.Empty;
+
+        await _dispatcher.DispatchUpdateDeviceRequestAsync(userId, deviceId, deviceToUpdate, cancellationToken);
+
         return NoContent();
     }
 

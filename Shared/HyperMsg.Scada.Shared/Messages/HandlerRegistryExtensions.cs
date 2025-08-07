@@ -83,6 +83,30 @@ public static class HandlerRegistryExtensions
         return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 
+    public static IDisposable RegisterUpdateDeviceRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Action<string, Device> handler)
+    {
+        RequestHandler<UpdateDeviceRequest, UpdateDeviceResponse> requestHandler = request =>
+        {
+            handler(request.UserId, request.Device);
+            return new();
+        };
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterUpdateDeviceRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<string, Device, Task> handler)
+    {
+        AsyncRequestHandler<UpdateDeviceRequest, UpdateDeviceResponse> requestHandler = async (request, ctx) =>
+        {
+            await handler(request.UserId, request.Device);
+            return new();
+        };
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
     #endregion
 
     #region Device Type Requests

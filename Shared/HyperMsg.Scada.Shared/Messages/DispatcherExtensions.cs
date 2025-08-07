@@ -51,6 +51,20 @@ public static class DispatcherExtensions
         return response.DeviceId;
     }
 
+    public static void DispatchUpdateDeviceRequest(this IDispatcher dispatcher, string userId, string deviceId, Device device)
+    {
+        var updateRequest = new UpdateDeviceRequest(userId, deviceId, device);
+
+        dispatcher.DispatchRequest<UpdateDeviceRequest, UpdateDeviceResponse>(updateRequest);
+    }
+
+    public static async Task DispatchUpdateDeviceRequestAsync(this IDispatcher dispatcher, string userId, string deviceId, Device device, CancellationToken cancellationToken)
+    {
+        var updateRequest = new UpdateDeviceRequest(userId, deviceId, device);
+
+        await dispatcher.DispatchRequestAsync<UpdateDeviceRequest, UpdateDeviceResponse>(updateRequest, cancellationToken);
+    }
+
     #endregion
 
     #region Device Type Requests

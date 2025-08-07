@@ -13,3 +13,7 @@ public record struct DeviceTypeListResponse(IEnumerable<DeviceType> DeviceTypes)
 public record struct DeviceTypeRequest(string UserId, string DeviceTypeId);
 
 public record struct DeviceTypeResponse(DeviceType DeviceType);
+
+public record struct UpdateDeviceTypeRequest(string UserId, DeviceType DeviceType);
+
+public record struct UpdateDeviceTypeResponse();

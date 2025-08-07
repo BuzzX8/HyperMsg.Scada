@@ -5,12 +5,12 @@ namespace HyperMsg.Scada.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class MetricController : ControllerBase
+public class MetricsController : ControllerBase
 {
     private readonly IDispatcher _dispatcher;
-    private readonly ILogger<MetricController> _logger;
+    private readonly ILogger<MetricsController> _logger;
 
-    public MetricController(IDispatcher dispatcher, ILogger<MetricController> logger)
+    public MetricsController(IDispatcher dispatcher, ILogger<MetricsController> logger)
     {
         _dispatcher = dispatcher;
         _logger = logger;

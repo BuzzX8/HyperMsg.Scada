@@ -10,7 +10,7 @@ namespace HyperMsg.Scada.WebApi.Controllers;
 /// API for managing devices.
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class DeviceController : ControllerBase
 {
     private readonly IDispatcher _dispatcher;
@@ -31,7 +31,7 @@ public class DeviceController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<DeviceDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var userId = User.FindFirst("sub")?.Value ?? string.Empty;
+        var userId = User?.FindFirst("sub")?.Value ?? string.Empty;
         var response = await _dispatcher.DispatchDeviceListRequestAsync(userId, cancellationToken);
 
         return Ok(response.Select(ToDeviceDto));
@@ -50,9 +50,10 @@ public class DeviceController : ControllerBase
     {
         var response = await _dispatcher.DispatchDeviceRequestAsync(deviceId, cancellationToken);
 
-        if (response is null || response.Id == string.Empty)
+        if (response is null)
         {
             _logger.LogWarning("Device with ID {DeviceId} not found", deviceId);
+
             return NotFound(deviceId);
         }
 
@@ -67,9 +68,18 @@ public class DeviceController : ControllerBase
     [HttpPost]
     [EndpointDescription("Create a new device")]
     [ProducesResponseType(typeof(DeviceDto), StatusCodes.Status201Created)]
-    public IActionResult Create([FromBody]DeviceDto device)
+    public async Task<IActionResult> Create([FromBody]DeviceDto device, CancellationToken cancellationToken)
     {
-        return CreatedAtAction(nameof(GetById), new { deviceId = "newDeviceId" }, device);
+        var newDevice = new Device
+        {
+            Id = device.Id,
+            Name = device.Name,
+            Type = device.Type
+        };
+        var newDeviceId = await _dispatcher.DispatchCreateDeviceRequestAsync("", newDevice, cancellationToken);
+        newDevice.Id = newDeviceId;
+
+        return CreatedAtAction(nameof(GetById), new { deviceId = newDeviceId }, newDevice);
     }
 
     /// <summary>
@@ -91,12 +101,12 @@ public class DeviceController : ControllerBase
     /// </summary>
     /// <param name="deviceId">The ID of the device to delete.</param>
     /// <returns>No content.</returns>
-    [HttpDelete("{deviceId}")]
-    [EndpointDescription("Delete a device by ID")]
-    public ActionResult Delete(string deviceId)
-    {
-        return NoContent();
-    }
+    //[HttpDelete("{deviceId}")]
+    //[EndpointDescription("Delete a device by ID")]
+    //public ActionResult Delete(string deviceId)
+    //{
+    //    return NoContent();
+    //}
 
     private static DeviceDto ToDeviceDto(Device device)
     {

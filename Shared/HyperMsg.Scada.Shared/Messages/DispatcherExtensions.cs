@@ -35,6 +35,22 @@ public static class DispatcherExtensions
         return response.Device;
     }
 
+    public static string DispatchCreateDeviceRequest(this IDispatcher dispatcher, string userId, Device device)
+    {
+        var createRequest = new CreateDeviceRequest(userId, device);
+        var response = dispatcher.DispatchRequest<CreateDeviceRequest, CreateDeviceResponse>(createRequest);
+
+        return response.DeviceId;
+    }
+
+    public static async Task<string> DispatchCreateDeviceRequestAsync(this IDispatcher dispatcher, string userId, Device device, CancellationToken cancellationToken)
+    {
+        var createRequest = new CreateDeviceRequest(userId, device);
+        var response = await dispatcher.DispatchRequestAsync<CreateDeviceRequest, CreateDeviceResponse>(createRequest, cancellationToken);
+
+        return response.DeviceId;
+    }
+
     #endregion
 
     #region Device Type Requests

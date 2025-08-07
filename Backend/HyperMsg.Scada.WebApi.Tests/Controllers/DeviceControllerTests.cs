@@ -25,7 +25,10 @@ public class DeviceControllerTests
     [Fact]
     public async Task GetAll_ReturnsOk_WithDeviceList()
     {
-        var devices = new List<Device> { new() { Id = "1", Name = "Test", Type = "TypeA" } };
+        var devices = new List<Device> 
+        { 
+            new() { Id = "1", Name = "Test", Type = "TypeA" } 
+        };
         messageBroker.RegisterDeviceListRequestHandler(_ => devices);
 
         var result = await _controller.GetAll(CancellationToken.None);
@@ -59,14 +62,27 @@ public class DeviceControllerTests
     }
 
     [Fact]
-    public void Create_ReturnsCreatedAtAction()
+    public async Task Create_ReturnsCreatedAtAction()
     {
-        var deviceDto = new DeviceDto { Id = "newDeviceId", Name = "New", Type = "TypeB" };
+        var newDeviceId = Guid.NewGuid().ToString();
+        var deviceDto = new DeviceDto 
+        { 
+            Id = "newDeviceId", 
+            Name = "New", 
+            Type = "TypeB" 
+        };
+        messageBroker.RegisterCreateDeviceRequestHandler((_, device) => 
+        {
+            Assert.Equal(deviceDto.Name, device.Name);
+            Assert.Equal(deviceDto.Type, device.Type);
 
-        var result = _controller.Create(deviceDto);
+            return newDeviceId;
+        });
+
+        var result = await _controller.Create(deviceDto, CancellationToken.None);
 
         var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-        Assert.Equal(deviceDto, createdResult.Value);
+        Assert.Equal(newDeviceId, createdResult.RouteValues!["deviceId"]);
     }
 
     [Fact]

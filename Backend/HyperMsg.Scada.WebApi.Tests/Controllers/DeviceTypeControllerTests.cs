@@ -94,7 +94,12 @@ public class DeviceTypeControllerTests
             Name = "EditType", 
             Description = "Desc" 
         };
-        messageBroker.RegisterUpdateDeviceTypeRequestHandler((userId, deviceType) => Task.CompletedTask);
+        messageBroker.RegisterUpdateDeviceTypeRequestHandler((userId, deviceType) => 
+        {
+            Assert.Equal("1", deviceType.Id);
+            Assert.Equal("EditType", deviceType.Name);
+            Assert.Equal("Desc", deviceType.Description);
+        });
 
         var result = await _controller.Update("1", deviceTypeDto, CancellationToken.None);
 

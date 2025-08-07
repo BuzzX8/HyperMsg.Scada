@@ -123,13 +123,7 @@ public static class HandlerRegistryExtensions
     {
         RequestHandler<CreateDeviceTypeRequest, CreateDeviceTypeResponse> requestHandler = request =>
         {
-            var deviceType = new DeviceType
-            {
-                //Name = request.Name,
-                //Description = request.Description,
-                //MetricTemplates = request.MetricTemplates.Select(m => m.ToModel())
-            };
-            var deviceTypeId = handler(deviceType);
+            var deviceTypeId = handler(request.DeviceType);
 
             return new(deviceTypeId);
         };
@@ -139,19 +133,41 @@ public static class HandlerRegistryExtensions
 
     public static IDisposable RegisterCreateDeviceTypeRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        Func<DeviceType, CancellationToken, Task<string>> handler)
+        Func<string, DeviceType, CancellationToken, Task<string>> handler)
     {
         AsyncRequestHandler<CreateDeviceTypeRequest, CreateDeviceTypeResponse> requestHandler = async (request, ctx) =>
         {
-            var deviceType = new DeviceType
-            {
-                //Name = request.Name,
-                //Description = request.Description,
-                //MetricTemplates = request.MetricTemplates.Select(m => m.ToModel())
-            };
-            var deviceTypeId = await handler(deviceType, ctx);
+            var deviceTypeId = await handler(request.UserId, request.DeviceType, ctx);
+
             return new(deviceTypeId);
         };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterUpdateDeviceTypeRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Action<string, DeviceType> handler)
+    {
+        RequestHandler<UpdateDeviceTypeRequest, UpdateDeviceTypeResponse> requestHandler = request =>
+        {
+            handler(request.UserId, request.DeviceType);
+            return new();
+        };
+
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterUpdateDeviceTypeRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<string, DeviceType, Task> handler)
+    {
+        AsyncRequestHandler<UpdateDeviceTypeRequest, UpdateDeviceTypeResponse> requestHandler = async (request, ctx) =>
+        {
+            await handler(request.UserId, request.DeviceType);
+            return new();
+        };
+
         return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 

@@ -69,15 +69,20 @@ public class DeviceTypeControllerTests
     [Fact]
     public async Task Create_Returns_CreatedAtActionResult()
     {
+        var newDeviceTypeId = Guid.NewGuid().ToString();
         var createDto = new CreateDeviceTypeDto 
         { 
             Name = "NewType", 
             Description = "Desc" 
         };
+        messageBroker.RegisterCreateDeviceTypeRequestHandler(type => newDeviceTypeId);
 
         var result = await _controller.Create(createDto, CancellationToken.None);
 
-        Assert.IsType<CreatedAtActionResult>(result);
+        var createdResult = result as CreatedAtActionResult;
+        Assert.NotNull(createdResult);
+        Assert.Equal("GetById", createdResult.ActionName);
+        Assert.Equal(newDeviceTypeId, createdResult.RouteValues!["deviceTypeId"]);
     }
 
     [Fact]
@@ -89,6 +94,7 @@ public class DeviceTypeControllerTests
             Name = "EditType", 
             Description = "Desc" 
         };
+        messageBroker.RegisterUpdateDeviceTypeRequestHandler((userId, deviceType) => Task.CompletedTask);
 
         var result = await _controller.Update("1", deviceTypeDto, CancellationToken.None);
 

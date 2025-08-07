@@ -21,14 +21,14 @@ public static class DispatcherExtensions
         return response.Devices;
     }
 
-    public static Device DispatchDeviceRequest(this IDispatcher dispatcher, string deviceId)
+    public static Device? DispatchDeviceRequest(this IDispatcher dispatcher, string deviceId)
     {
         var response = dispatcher.DispatchRequest<DeviceRequest, DeviceResponse>(new() { DeviceId = deviceId });
 
         return response.Device;
     }
 
-    public static async Task<Device> DispatchDeviceRequestAsync(this IDispatcher dispatcher, string deviceId, CancellationToken cancellationToken)
+    public static async Task<Device?> DispatchDeviceRequestAsync(this IDispatcher dispatcher, string deviceId, CancellationToken cancellationToken)
     {
         var response = await dispatcher.DispatchRequestAsync<DeviceRequest, DeviceResponse>(new() { DeviceId = deviceId }, cancellationToken);
 
@@ -53,14 +53,14 @@ public static class DispatcherExtensions
         return response.DeviceTypes;
     }
 
-    public static DeviceType DispatchDeviceTypeRequest(this IDispatcher dispatcher, string deviceTypeId)
+    public static DeviceType? DispatchDeviceTypeRequest(this IDispatcher dispatcher, string deviceTypeId)
     {
         var response = dispatcher.DispatchRequest<DeviceTypeRequest, DeviceTypeResponse>(new() { DeviceTypeId = deviceTypeId });
 
         return response.DeviceType;
     }
 
-    public static async Task<DeviceType> DispatchDeviceTypeRequestAsync(this IDispatcher dispatcher, string deviceTypeId, CancellationToken cancellationToken)
+    public static async Task<DeviceType?> DispatchDeviceTypeRequestAsync(this IDispatcher dispatcher, string deviceTypeId, CancellationToken cancellationToken)
     {
         var response = await dispatcher.DispatchRequestAsync<DeviceTypeRequest, DeviceTypeResponse>(new() { DeviceTypeId = deviceTypeId }, cancellationToken);
 

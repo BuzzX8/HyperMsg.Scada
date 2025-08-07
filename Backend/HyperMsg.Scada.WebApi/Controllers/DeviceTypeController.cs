@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HyperMsg.Scada.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class DeviceTypeController : ControllerBase
 {
     private readonly IDispatcher _dispatcher;
@@ -41,7 +41,7 @@ public class DeviceTypeController : ControllerBase
     {
         var response = await _dispatcher.DispatchDeviceTypeRequestAsync(deviceTypeId, cancellationToken);
         
-        if (response is null || response.Id == string.Empty)
+        if (response is null)
         {
             _logger.LogWarning("Device type with ID {DeviceTypeId} not found", deviceTypeId);
             return NotFound(deviceTypeId);
@@ -63,7 +63,7 @@ public class DeviceTypeController : ControllerBase
 
         var response = await _dispatcher.DispatchCreateDeviceTypeRequestAsync("", deviceType, cancellationToken);
 
-        return CreatedAtAction(nameof(GetById), new { deviceId = response }, deviceType);
+        return CreatedAtAction(nameof(GetById), new { deviceTypeId = response }, deviceType);
     }
 
     [HttpPut("{deviceTypeId}")]

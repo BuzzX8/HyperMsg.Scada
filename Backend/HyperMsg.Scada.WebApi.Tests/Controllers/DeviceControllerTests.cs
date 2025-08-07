@@ -25,8 +25,11 @@ public class DeviceControllerTests
     [Fact]
     public async Task GetAll_ReturnsOk_WithDeviceList()
     {
-        var devices = new List<Device> { new() { Id = "1", Name = "Test", Type = "TypeA" } };
-        messageBroker.RegisterDeviceListRequestHandler(_ => new(devices));
+        var devices = new List<Device> 
+        { 
+            new() { Id = "1", Name = "Test", Type = "TypeA" } 
+        };
+        messageBroker.RegisterDeviceListRequestHandler(_ => devices);
 
         var result = await _controller.GetAll(CancellationToken.None);
 
@@ -39,7 +42,7 @@ public class DeviceControllerTests
     public async Task GetById_ReturnsOk_WhenDeviceExists()
     {
         var device = new Device { Id = "1", Name = "Test", Type = "TypeA" };
-        messageBroker.RegisterDeviceRequestHandler(_ => new(device));
+        messageBroker.RegisterDeviceRequestHandler((_, _) => device);
 
         var result = await _controller.GetById("1", CancellationToken.None);
 
@@ -51,7 +54,7 @@ public class DeviceControllerTests
     [Fact]
     public async Task GetById_ReturnsNotFound_WhenDeviceDoesNotExist()
     {
-        messageBroker.RegisterDeviceRequestHandler(_ => new(null!));
+        messageBroker.RegisterDeviceRequestHandler((_, _) => null!);
 
         var result = await _controller.GetById("2", CancellationToken.None);
 
@@ -59,30 +62,45 @@ public class DeviceControllerTests
     }
 
     [Fact]
-    public void Create_ReturnsCreatedAtAction()
+    public async Task Create_ReturnsCreatedAtAction()
     {
-        var deviceDto = new DeviceDto { Id = "newDeviceId", Name = "New", Type = "TypeB" };
+        var newDeviceId = Guid.NewGuid().ToString();
+        var deviceDto = new CreateDeviceDto 
+        {
+            Name = "New", 
+            Type = "TypeB" 
+        };
+        messageBroker.RegisterCreateDeviceRequestHandler((_, device) => 
+        {
+            Assert.Equal(deviceDto.Name, device.Name);
+            Assert.Equal(deviceDto.Type, device.Type);
 
-        var result = _controller.Create(deviceDto);
+            return newDeviceId;
+        });
+
+        var result = await _controller.Create(deviceDto, CancellationToken.None);
 
         var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-        Assert.Equal(deviceDto, createdResult.Value);
+        Assert.Equal(newDeviceId, createdResult.RouteValues!["deviceId"]);
     }
 
     [Fact]
-    public void Edit_ReturnsNoContent()
+    public async Task Update_ReturnsNoContent()
     {
-        var deviceDto = new DeviceDto { Id = "1", Name = "Edit", Type = "TypeC" };
+        var deviceDto = new DeviceDto 
+        { 
+            Id = Guid.NewGuid().ToString(),
+            Name = "Edit", 
+            Type = "TypeC" 
+        };
+        messageBroker.RegisterUpdateDeviceRequestHandler((_, device) => 
+        {
+            Assert.Equal(deviceDto.Id, device.Id);
+            Assert.Equal(deviceDto.Name, device.Name);
+            Assert.Equal(deviceDto.Type, device.Type);
+        });
 
-        var result = _controller.Edit("1", deviceDto);
-
-        Assert.IsType<NoContentResult>(result);
-    }
-
-    [Fact]
-    public void Delete_ReturnsNoContent()
-    {
-        var result = _controller.Delete("1");
+        var result = await _controller.Update(deviceDto.Id, deviceDto, CancellationToken.None);
 
         Assert.IsType<NoContentResult>(result);
     }

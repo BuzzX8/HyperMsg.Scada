@@ -1,3 +1,3 @@
 ﻿namespace HyperMsg.Scada.Shared.Messages;
 
-public record DeviceListRequest();
+public record struct DeviceListRequest(string UserId);

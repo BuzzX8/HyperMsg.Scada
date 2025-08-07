@@ -128,4 +128,24 @@ public static class DispatcherExtensions
     }
 
     #endregion
+
+    #region Metrics Requests
+
+    public static IEnumerable<Metric> DispatchDeviceMetricsRequest(this IDispatcher dispatcher, string userId, string? deviceId = null, DateTime? startTime = null, DateTime? endTime = null)
+    {
+        var request = new DeviceMetricsRequest(userId, deviceId, startTime, endTime);
+        var response = dispatcher.DispatchRequest<DeviceMetricsRequest, DeviceMetricsResponse>(request);
+
+        return response.Metrics;
+    }
+
+    public static async Task<IEnumerable<Metric>> DispatchDeviceMetricsRequestAsync(this IDispatcher dispatcher, string userId, string? deviceId = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken cancellationToken = default)
+    {
+        var request = new DeviceMetricsRequest(userId, deviceId, startTime, endTime);
+        var response = await dispatcher.DispatchRequestAsync<DeviceMetricsRequest, DeviceMetricsResponse>(request, cancellationToken);
+
+        return response.Metrics;
+    }
+
+    #endregion
 }

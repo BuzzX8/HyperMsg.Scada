@@ -1,5 +1,7 @@
 ﻿using HyperMsg.Messaging;
+using HyperMsg.Scada.Shared.Messages;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace HyperMsg.Scada.WebApi.Controllers;
 
@@ -18,13 +20,17 @@ public class MetricsController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetMetricsAsync([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken cancellationToken)
-    {        
+    {
+        var metrics = await _dispatcher.DispatchDeviceMetricsRequestAsync("", null, from, to, cancellationToken);
+
         return Ok();
     }
 
     [HttpGet("{deviceId}")]
-    public async Task<IActionResult> GetMetricsByDeviceIdAsync(string deviceId, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
+    public async Task<IActionResult> GetMetricsByDeviceIdAsync(string deviceId, [FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken cancellationToken)
     {
+        var metrics = await _dispatcher.DispatchDeviceMetricsRequestAsync("", deviceId, from, to, cancellationToken);
+
         return Ok();
     }
 }

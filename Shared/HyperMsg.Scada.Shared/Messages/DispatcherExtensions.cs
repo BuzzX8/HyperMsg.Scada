@@ -147,5 +147,21 @@ public static class DispatcherExtensions
         return response.Metrics;
     }
 
+    public static string DispatchCreateMetricRequest(this IDispatcher dispatcher, string userId, Metric metric)
+    {
+        var request = new CreateMetricRequest(userId, metric);
+        var response = dispatcher.DispatchRequest<CreateMetricRequest, CreateMetricResponse>(request);
+
+        return response.MetricId;
+    }
+
+    public static async Task<string> DispatchCreateMetricRequestAsync(this IDispatcher dispatcher, string userId, Metric metric, CancellationToken cancellationToken = default)
+    {
+        var request = new CreateMetricRequest(userId, metric);
+        var response = await dispatcher.DispatchRequestAsync<CreateMetricRequest, CreateMetricResponse>(request, cancellationToken);
+
+        return response.MetricId;
+    }
+
     #endregion
 }

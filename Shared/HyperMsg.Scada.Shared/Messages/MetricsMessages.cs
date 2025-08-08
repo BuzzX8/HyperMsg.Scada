@@ -15,3 +15,12 @@ public record struct DeviceMetricsResponse(
     DateTime? StartTime = null,
     DateTime? EndTime = null
 );
+
+public record struct CreateMetricRequest(
+    string UserId,
+    Metric Metric
+);
+
+public record struct CreateMetricResponse(
+    string MetricId
+);

@@ -4,9 +4,19 @@ using System.Collections.Generic;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public class DeviceTypeContext(DbContextOptions<DeviceTypeContext> options) : DbContext(options)
+public class DeviceTypeContext(DbContextOptions<DeviceTypeContext> options) : DbContext(options), IDeviceTypeRepository
 {
     public DbSet<DeviceType> DeviceTypes { get; set; }
+
+    public ValueTask<string> CreateDeviceType(DeviceType deviceType)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask DeleteDeviceType(string id)
+    {
+        throw new NotImplementedException();
+    }
 
     public ValueTask<DeviceType?> GetDeviceTypeByIdAsync(string id)
     {
@@ -16,6 +26,11 @@ public class DeviceTypeContext(DbContextOptions<DeviceTypeContext> options) : Db
     public IAsyncEnumerable<DeviceType> GetDeviceTypesAsync()
     {
         return DeviceTypes.AsAsyncEnumerable<DeviceType>();
+    }
+
+    public ValueTask UpdateDeviceType(DeviceType deviceType)
+    {
+        throw new NotImplementedException();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

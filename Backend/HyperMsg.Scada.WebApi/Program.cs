@@ -11,11 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v2", new OpenApiInfo
+    c.SwaggerDoc("HyperMsg Scada Web API", new OpenApiInfo
     {
-        Description = "HyperMsg Scada Web API",
-        Title = "HyperMsg Scada WebApi",
-        Version = "v2"
+        Title = "HyperMsg Scada API",
+        Version = "v3",
+        Description = "Web API for HyperMsg Scada"
     });
 });
 builder.Services.AddMessagingContext();
@@ -30,21 +30,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.5
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(options =>
-    {
-        options.RouteTemplate = "swagger/v2/swagger.json";
-        options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0;
-    });
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v2/swagger.json", "HyperMsg.Scada.WebApi v2");
-        
-    });
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 

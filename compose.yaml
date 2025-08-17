@@ -1,0 +1,10 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+services:
+  hypermsgscadawebapi:
+    image: hypermsgscadawebapi
+    build:
+      context: .
+      dockerfile: Backend/HyperMsg.Scada.WebApi/Dockerfile
+    ports:
+      - 8080:8080

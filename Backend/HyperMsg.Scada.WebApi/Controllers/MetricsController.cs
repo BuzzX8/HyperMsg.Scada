@@ -28,7 +28,13 @@ public class MetricsController : ControllerBase
     {
         var metrics = await _dispatcher.DispatchDeviceMetricsRequestAsync("", null, from, to, cancellationToken);
 
-        return Ok();
+        if (metrics is null || !metrics.Any())
+        {
+            _logger.LogWarning("No metrics found for the specified time range.");
+            return NotFound("No metrics found for the specified time range.");
+        }
+
+        return Ok(metrics);
     }
 
     [HttpGet("{deviceId}")]
@@ -39,7 +45,13 @@ public class MetricsController : ControllerBase
     {
         var metrics = await _dispatcher.DispatchDeviceMetricsRequestAsync("", deviceId, from, to, cancellationToken);
 
-        return Ok();
+        if (metrics is null || !metrics.Any())
+        {
+            _logger.LogWarning("No metrics found for device {DeviceId}", deviceId);
+            return NotFound($"No metrics found for device {deviceId}");
+        }
+
+        return Ok(metrics);
     }
 
     [HttpPost]
@@ -50,7 +62,7 @@ public class MetricsController : ControllerBase
     {
         var userId = User?.FindFirst("sub")?.Value ?? string.Empty; // Assuming user ID is stored in JWT token
 
-        var metricModel = new Metric(metric.DeviceId, DateTime.UtcNow, metric.Value);
+        var metricModel = new Metric(metric.DeviceId, DateTime.UtcNow, metric.Payload);
 
         var response = await _dispatcher.DispatchCreateMetricRequestAsync(userId, metricModel, cancellationToken);
 

@@ -24,7 +24,7 @@ public class MetricsControllerTests
     }
 
     [Fact]
-    public async Task GetMetricsAsync_ShouldReturnOk()
+    public async Task GetMetricsAsync_ShouldReturnNotFoundObject()
     {
         // Arrange
         var from = DateTime.UtcNow.AddDays(-1);
@@ -32,11 +32,11 @@ public class MetricsControllerTests
         // Act
         var result = await _controller.GetMetricsAsync(from, to, CancellationToken.None);
         // Assert
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
-    public async Task GetMetricsByDeviceIdAsync_ShouldReturnOk()
+    public async Task GetMetricsByDeviceIdAsync_ShouldReturnNotFoundObject()
     {
         // Arrange
         var deviceId = "test-device-id";
@@ -45,7 +45,7 @@ public class MetricsControllerTests
         // Act
         var result = await _controller.GetMetricsByDeviceIdAsync(deviceId, from, to, CancellationToken.None);
         // Assert
-        Assert.IsType<OkResult>(result);
+        Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class MetricsControllerTests
         var metric = new CreateMetricDto
         {
             DeviceId = "test-device-id",
-            Value = JsonSerializer.Deserialize<JsonObject>("{\"temperature\": 22.5, \"humidity\": 60}")!,
+            Payload = JsonSerializer.Deserialize<JsonObject>("{\"temperature\": 22.5, \"humidity\": 60}")!,
         };
         _messageBroker.RegisterCreateMetricRequestHandler((userId, metricModel) =>
         {

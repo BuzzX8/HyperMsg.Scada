@@ -1,5 +1,6 @@
 ﻿using HyperMsg.Scada.Shared.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace HyperMsg.Scada.DataAccess;
 
@@ -7,15 +8,18 @@ public class DeviceTypeContext(DbContextOptions<DeviceTypeContext> options) : Db
 {
     public DbSet<DeviceType> DeviceTypes { get; set; }
 
+    public ValueTask<DeviceType?> GetDeviceTypeByIdAsync(string id)
+    {
+        return DeviceTypes.FindAsync(id);
+    }
+
+    public IAsyncEnumerable<DeviceType> GetDeviceTypesAsync()
+    {
+        return DeviceTypes.AsAsyncEnumerable<DeviceType>();
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<DeviceType>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).IsRequired().HasMaxLength(50);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.HasIndex(e => e.Name).IsUnique();
-        });
+        modelBuilder.ApplyConfiguration(new DeviceTypeConfiguration());
     }
 }

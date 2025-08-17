@@ -127,11 +127,11 @@ public static class HandlerRegistryExtensions
 
     public static IDisposable RegisterDeviceTypeListRequestHandler(
         this IHandlerRegistry handlersRegistry,
-        Func<string, CancellationToken, IEnumerable<DeviceType>> handler)
+        Func<string, CancellationToken, Task<IEnumerable<DeviceType>>> handler)
     {
         AsyncRequestHandler<DeviceTypeListRequest, DeviceTypeListResponse> requestHandler = async (request, ctx) =>
         {
-            var response = handler(request.UserId, ctx);
+            var response = await handler(request.UserId, ctx);
             return new(response);
         };
 
@@ -216,6 +216,58 @@ public static class HandlerRegistryExtensions
             return new();
         };
 
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    #endregion
+
+    #region Device Metrics Requests
+
+    public static IDisposable RegisterDeviceMetricsRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<string, string, DateTime?, DateTime?, IEnumerable<Metric>> handler)
+    {
+        RequestHandler<DeviceMetricsRequest, DeviceMetricsResponse> requestHandler = request =>
+        {
+            var metrics = handler(request.UserId, request.DeviceId, request.StartTime, request.EndTime);
+            return new(metrics);
+        };
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterDeviceMetricsRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<string, string, DateTime?, DateTime?, CancellationToken, Task<IEnumerable<Metric>>> handler)
+    {
+        AsyncRequestHandler<DeviceMetricsRequest, DeviceMetricsResponse> requestHandler = async (request, ctx) =>
+        {
+            var metrics = await handler(request.UserId, request.DeviceId, request.StartTime, request.EndTime, ctx);
+            return new(metrics);
+        };
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterCreateMetricRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<string, Metric, string> handler)
+    {
+        RequestHandler<CreateMetricRequest, CreateMetricResponse> requestHandler = request =>
+        {
+            var metric = handler(request.UserId, request.Metric);
+            return new(metric);
+        };
+        return handlersRegistry.RegisterRequestHandler(requestHandler);
+    }
+
+    public static IDisposable RegisterCreateMetricRequestHandler(
+        this IHandlerRegistry handlersRegistry,
+        Func<string, Metric, CancellationToken, Task<string>> handler)
+    {
+        AsyncRequestHandler<CreateMetricRequest, CreateMetricResponse> requestHandler = async (request, ctx) =>
+        {
+            var metric = await handler(request.UserId, request.Metric, ctx);
+            return new(metric);
+        };
         return handlersRegistry.RegisterRequestHandler(requestHandler);
     }
 

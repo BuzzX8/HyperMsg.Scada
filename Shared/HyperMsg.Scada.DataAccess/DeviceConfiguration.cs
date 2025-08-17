@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public class DeviceConfiguration : IEntityTypeConfiguration<Shared.Models.Device>
+public class DeviceConfiguration : IEntityTypeConfiguration<Device>
 {
     public void Configure(EntityTypeBuilder<Device> builder)
     {

@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\HyperMsg.Scada.DataAccess\HyperMsg.Scada.DataAccess.csproj" />
     <ProjectReference Include="..\..\Shared\HyperMsg.Scada.Shared\HyperMsg.Scada.Shared.csproj" />
   </ItemGroup>
 

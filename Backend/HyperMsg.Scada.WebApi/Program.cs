@@ -9,15 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("HyperMsg Scada Web API", new OpenApiInfo
-    {
-        Title = "HyperMsg Scada API",
-        Version = "v3",
-        Description = "Web API for HyperMsg Scada"
-    });
-});
+builder.Services.AddSwaggerGen();
 builder.Services.AddMessagingContext();
 
 builder.Services.AddDataAccessRepositories();

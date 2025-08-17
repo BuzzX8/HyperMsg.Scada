@@ -8,3 +8,17 @@ services:
       dockerfile: Backend/HyperMsg.Scada.WebApi/Dockerfile
     ports:
       - 8080:8080
+
+  hypermsgdbmssql:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=YourStrong!Passw0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - 1433:1433
+    networks:
+      - bridged
+
+networks:
+  bridged:
+    driver: bridge

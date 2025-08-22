@@ -2,6 +2,8 @@ using HyperMsg.Messaging;
 using HyperMsg.Scada.DataAccess;
 using HyperMsg.Scada.WebApi;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMessagingContext();
 
-builder.Services.AddDataAccessRepositories();
 builder.Services.AddDataComponent();
-builder.Services.AddDbContext<DeviceContext>();
-builder.Services.AddDbContext<DeviceTypeContext>();
+builder.Services.AddDataAccessRepositories(options => options.UseSqlServer(
+            @"Server=(localdb)\mssqllocaldb;Database=HyperMsg.Scada;ConnectRetryCount=0"));
 
 var app = builder.Build();
 

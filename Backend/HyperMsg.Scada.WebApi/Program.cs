@@ -1,6 +1,7 @@
 using HyperMsg.Messaging;
 using HyperMsg.Scada.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 
 
@@ -17,9 +18,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMessagingContext();
 
 builder.Services.AddDataComponent();
-builder.Services.AddDataAccessRepositories();// options => options.UseSqlServer(connectionString));
+builder.Services.AddDataAccessRepositories(options =>
+{
+    options.UseSqlServer(connectionString);
+});
 
 var app = builder.Build();
+
+var deviceContext = app.Services.GetRequiredService<IDbContextFactory<DeviceContext>>();
+
+ApplyMigrations(deviceContext);
 
 // Configure the HTTP request pipeline.5
 if (app.Environment.IsDevelopment())
@@ -35,3 +43,10 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.Run();
+
+static void ApplyMigrations(IDbContextFactory<DeviceContext> deviceContextFactory)
+{
+    using var context = deviceContextFactory.CreateDbContext();    
+
+    var pendingMigrations = context.Database.GetPendingMigrations().ToList();
+}

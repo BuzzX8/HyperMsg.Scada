@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMessagingContext();
 
 builder.Services.AddDataComponent();
-builder.Services.AddDataAccessRepositories(options => options.UseSqlServer(connectionString));
+builder.Services.AddDataAccessRepositories();// options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 

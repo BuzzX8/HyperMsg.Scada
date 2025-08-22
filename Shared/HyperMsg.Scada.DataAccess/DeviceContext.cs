@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using HyperMsg.Scada.Shared.Models;
+﻿using HyperMsg.Scada.Shared.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HyperMsg.Scada.DataAccess;
 
@@ -27,6 +27,15 @@ public class DeviceContext(DbContextOptions<DeviceContext> options) : DbContext(
         await Devices.AddAsync(device);
         await SaveChangesAsync();
         return device.Id;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseInMemoryDatabase("DeviceDatabase");
+            
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

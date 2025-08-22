@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public record DataComponent(IDbContextFactory<DeviceContext> ContextFactory) : IMessagingComponent
+public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactory, IDbContextFactory<DeviceTypeContext> DeviceTypeFactory) : IMessagingComponent
 {
     private readonly List<IDisposable> disposables = [];
 
@@ -18,6 +18,7 @@ public record DataComponent(IDbContextFactory<DeviceContext> ContextFactory) : I
     {
         yield return handlerRegistry.RegisterDeviceListRequestHandler((userId, ctx) => GetDevicesByUserIdAsync(userId, ctx));
         yield return handlerRegistry.RegisterDeviceRequestHandler((userId, deviceId, ctx) => GetDeviceByIdAsync(userId, deviceId, ctx)!);
+        yield return handlerRegistry.RegisterCreateDeviceRequestHandler((userId, device, ctx) => CreateDeviceAsync(userId, device, ctx));
     }
 
     public void Detach(IMessagingContext messagingContext)
@@ -28,9 +29,11 @@ public record DataComponent(IDbContextFactory<DeviceContext> ContextFactory) : I
         }
     }
 
+    #region Device Handlers
+
     private async Task<IEnumerable<Device>> GetDevicesByUserIdAsync(string userId, CancellationToken cancellationToken)
     {
-        using var context = ContextFactory.CreateDbContext();
+        using var context = DeviceContextFactory.CreateDbContext();
 
         var devices = await context.Devices.ToListAsync(cancellationToken);
 
@@ -39,8 +42,30 @@ public record DataComponent(IDbContextFactory<DeviceContext> ContextFactory) : I
 
     private Task<Device?> GetDeviceByIdAsync(string userId, string deviceId, CancellationToken cancellationToken)
     {
-        using var context = ContextFactory.CreateDbContext();
+        using var context = DeviceContextFactory.CreateDbContext();
         
         return context.Devices.FindAsync([deviceId], cancellationToken).AsTask();
     }
+
+    private async Task<string> CreateDeviceAsync(string userId, Device device, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(device);
+
+        using var context = DeviceContextFactory.CreateDbContext();
+
+        if (string.IsNullOrWhiteSpace(device.Id))
+        {
+            device.Id = Guid.NewGuid().ToString();
+        }
+
+        await context.Devices.AddAsync(device, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        return device.Id;
+    }
+
+    #endregion
+
+    #region DeviceType Handlers
+
+    #endregion
 }

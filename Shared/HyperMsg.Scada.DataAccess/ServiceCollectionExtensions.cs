@@ -10,7 +10,6 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        //services.AddDbContext<DeviceContext>(optionsAction);
         services.AddDbContextFactory<DeviceContext>(optionsAction);
         services.AddScoped<IDeviceRepository, DeviceContext>();
         
@@ -21,7 +20,7 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddDbContext<DeviceContext>(optionsAction);
+        services.AddDbContextFactory<DeviceTypeContext>(optionsAction);
         services.AddScoped<IDeviceTypeRepository, DeviceTypeContext>();
         
         return services;
@@ -32,7 +31,7 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddDeviceRepository(optionsAction);
-        //services.AddDeviceTypeRepository();
+        services.AddDeviceTypeRepository(optionsAction);
 
         return services;
     }

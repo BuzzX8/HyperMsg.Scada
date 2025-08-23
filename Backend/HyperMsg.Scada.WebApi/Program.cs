@@ -1,14 +1,11 @@
 using HyperMsg.Messaging;
 using HyperMsg.Scada.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-var connectionString = builder.Configuration.GetConnectionString("LocalMsSql") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//var connectionString = builder.Configuration.GetConnectionString("LocalMsSql") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -25,10 +22,6 @@ builder.Services.AddDataAccessRepositories(options =>
 
 var app = builder.Build();
 
-var deviceContext = app.Services.GetRequiredService<IDbContextFactory<DeviceContext>>();
-
-ApplyMigrations(deviceContext);
-
 // Configure the HTTP request pipeline.5
 if (app.Environment.IsDevelopment())
 {
@@ -43,10 +36,3 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.Run();
-
-static void ApplyMigrations(IDbContextFactory<DeviceContext> deviceContextFactory)
-{
-    using var context = deviceContextFactory.CreateDbContext();    
-
-    var pendingMigrations = context.Database.GetPendingMigrations().ToList();
-}

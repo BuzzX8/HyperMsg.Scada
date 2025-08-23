@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactory, IDbContextFactory<DeviceTypeContext> DeviceTypeFactory) : IMessagingComponent
+public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactory, IDbContextFactory<DeviceTypeContext> DeviceTypeContext) : IMessagingComponent
 {
     private readonly List<IDisposable> disposables = [];
 
@@ -16,9 +16,9 @@ public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactor
 
     private IEnumerable<IDisposable> RegisterHandlers(IHandlerRegistry handlerRegistry)
     {
-        yield return handlerRegistry.RegisterDeviceListRequestHandler((userId, ctx) => GetDevicesByUserIdAsync(userId, ctx));
+        yield return handlerRegistry.RegisterDeviceListRequestHandler(GetDevicesByUserIdAsync);
         yield return handlerRegistry.RegisterDeviceRequestHandler((userId, deviceId, ctx) => GetDeviceByIdAsync(userId, deviceId, ctx)!);
-        yield return handlerRegistry.RegisterCreateDeviceRequestHandler((userId, device, ctx) => CreateDeviceAsync(userId, device, ctx));
+        yield return handlerRegistry.RegisterCreateDeviceRequestHandler(CreateDeviceAsync);
     }
 
     public void Detach(IMessagingContext messagingContext)

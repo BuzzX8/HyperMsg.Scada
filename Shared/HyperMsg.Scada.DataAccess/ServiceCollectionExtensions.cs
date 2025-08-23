@@ -9,8 +9,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDeviceRepository(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
     {
         ArgumentNullException.ThrowIfNull(services);
-
-        services.AddDbContext<DeviceContext>(optionsAction);
+                
         services.AddDbContextFactory<DeviceContext>(optionsAction);        
         
         return services;

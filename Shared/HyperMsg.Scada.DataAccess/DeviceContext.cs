@@ -3,16 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public class DeviceContext(DbContextOptions<DeviceContext> options) : DbContext(options), IDeviceRepository
+public class DeviceContext(DbContextOptions<DeviceContext> options) : DbContext(options)
 {
-    //private static DbContextOptions<DeviceContext> DefaultOptions = new DbContextOptionsBuilder<DeviceContext>()        
-    //    .UseInMemoryDatabase("DeviceDatabase")
-    //    .Options;
-
-    //public DeviceContext() : this(DefaultOptions)
-    //{
-    //}
-
     public DbSet<Device> Devices { get; set; }
 
     public ValueTask<Device?> GetDeviceByIdAsync(string id)

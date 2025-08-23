@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public class DeviceTypeContext(DbContextOptions<DeviceTypeContext> options) : DbContext(options), IDeviceTypeRepository
+public class DeviceTypeContext(DbContextOptions<DeviceTypeContext> options) : DbContext(options)
 {
     public DbSet<DeviceType> DeviceTypes { get; set; }
 

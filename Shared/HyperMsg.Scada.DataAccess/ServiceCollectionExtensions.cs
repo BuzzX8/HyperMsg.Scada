@@ -11,8 +11,7 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddDbContext<DeviceContext>(optionsAction);
-        services.AddDbContextFactory<DeviceContext>(optionsAction);
-        services.AddScoped<IDeviceRepository, DeviceContext>();
+        services.AddDbContextFactory<DeviceContext>(optionsAction);        
         
         return services;
     }
@@ -22,7 +21,6 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddDbContextFactory<DeviceTypeContext>(optionsAction);
-        services.AddScoped<IDeviceTypeRepository, DeviceTypeContext>();
         
         return services;
     }

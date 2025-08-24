@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HyperMsg.Core" Version="0.9.0" />
+    <PackageReference Include="HyperMsg.Messaging" Version="0.9.0" />
   </ItemGroup>
 
 </Project>

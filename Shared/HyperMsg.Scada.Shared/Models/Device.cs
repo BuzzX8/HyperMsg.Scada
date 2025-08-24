@@ -9,5 +9,5 @@ public class Device
     public string Status { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
 
-    public IDictionary<string, object> Metadata { get; private set; } = new ConcurrentDictionary<string, object>();
+    //public IDictionary<string, object> Metadata { get; private set; } = new ConcurrentDictionary<string, object>();
 }

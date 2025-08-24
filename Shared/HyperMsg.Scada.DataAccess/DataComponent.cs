@@ -19,13 +19,7 @@ public record DataComponent(IDeviceRepository DeviceRepository) : IMessagingComp
         yield return handlerRegistry.RegisterDeviceRequestHandler((userId, deviceId, ctx) => GetDeviceByIdAsync(DeviceRepository, userId, deviceId, ctx));
     }
 
-    public void Detach(IMessagingContext messagingContext)
-    {
-        foreach (var disposable in disposables)
-        {
-            disposable.Dispose();
-        }
-    }
+    public void Detach(IMessagingContext _) => Dispose();
 
     private static Task<IEnumerable<Device>> GetDevicesByUserIdAsync(IDeviceRepository repository, string userId, CancellationToken cancellationToken)
     {
@@ -37,5 +31,13 @@ public record DataComponent(IDeviceRepository DeviceRepository) : IMessagingComp
     private static Task<Device?> GetDeviceByIdAsync(IDeviceRepository repository, string userId, string deviceId, CancellationToken cancellationToken)
     {
         return repository.GetDeviceByIdAsync(deviceId).AsTask();
+    }
+
+    public void Dispose()
+    {
+        foreach (var disposable in disposables)
+        {
+            disposable.Dispose();
+        }
     }
 }

@@ -1,34 +1,35 @@
 ﻿using HyperMsg.Messaging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HyperMsg.Scada.DataAccess;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDeviceRepository(this IServiceCollection services)
+    public static IServiceCollection AddDeviceRepository(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
     {
         ArgumentNullException.ThrowIfNull(services);
-        
-        services.AddScoped<IDeviceRepository, DeviceContext>();
+                
+        services.AddDbContextFactory<DeviceContext>(optionsAction);        
         
         return services;
     }
 
-    public static IServiceCollection AddDeviceTypeRepository(this IServiceCollection services)
+    public static IServiceCollection AddDeviceTypeRepository(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
     {
         ArgumentNullException.ThrowIfNull(services);
-        
-        services.AddScoped<IDeviceTypeRepository, DeviceTypeContext>();
+
+        services.AddDbContextFactory<DeviceTypeContext>(optionsAction);
         
         return services;
     }
 
-    public static IServiceCollection AddDataAccessRepositories(this IServiceCollection services)
+    public static IServiceCollection AddDataAccessRepositories(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddDeviceRepository();
-        services.AddDeviceTypeRepository();
+        services.AddDeviceRepository(optionsAction);
+        services.AddDeviceTypeRepository(optionsAction);
 
         return services;
     }

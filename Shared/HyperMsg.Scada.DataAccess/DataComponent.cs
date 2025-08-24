@@ -1,10 +1,11 @@
 ﻿using HyperMsg.Messaging;
 using HyperMsg.Scada.Shared.Messages;
 using HyperMsg.Scada.Shared.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public record DataComponent(IDeviceRepository DeviceRepository) : IMessagingComponent
+public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactory, IDbContextFactory<DeviceTypeContext> DeviceTypeContext) : IMessagingComponent
 {
     private readonly List<IDisposable> disposables = [];
 
@@ -15,23 +16,48 @@ public record DataComponent(IDeviceRepository DeviceRepository) : IMessagingComp
 
     private IEnumerable<IDisposable> RegisterHandlers(IHandlerRegistry handlerRegistry)
     {
-        yield return handlerRegistry.RegisterDeviceListRequestHandler((userId, ctx) => GetDevicesByUserIdAsync(DeviceRepository, userId, ctx));
-        yield return handlerRegistry.RegisterDeviceRequestHandler((userId, deviceId, ctx) => GetDeviceByIdAsync(DeviceRepository, userId, deviceId, ctx));
+        yield return handlerRegistry.RegisterDeviceListRequestHandler(GetDevicesByUserIdAsync);
+        yield return handlerRegistry.RegisterDeviceRequestHandler((userId, deviceId, ctx) => GetDeviceByIdAsync(userId, deviceId, ctx)!);
+        yield return handlerRegistry.RegisterCreateDeviceRequestHandler(CreateDeviceAsync);
     }
 
     public void Detach(IMessagingContext _) => Dispose();
 
-    private static Task<IEnumerable<Device>> GetDevicesByUserIdAsync(IDeviceRepository repository, string userId, CancellationToken cancellationToken)
-    {
-        var devices = repository.GetDevicesAsync();
+    #region Device Handlers
 
-        throw new NotImplementedException("The method GetDevicesByUserIdAsync is not implemented yet. Please implement this method to retrieve devices by user ID.");
+    private async Task<IEnumerable<Device>> GetDevicesByUserIdAsync(string userId, CancellationToken cancellationToken)
+    {
+        using var context = DeviceContextFactory.CreateDbContext();
+
+        var devices = await context.Devices.ToListAsync(cancellationToken);
+
+        return devices;
     }
 
-    private static Task<Device?> GetDeviceByIdAsync(IDeviceRepository repository, string userId, string deviceId, CancellationToken cancellationToken)
+    private Task<Device?> GetDeviceByIdAsync(string userId, string deviceId, CancellationToken cancellationToken)
     {
-        return repository.GetDeviceByIdAsync(deviceId).AsTask();
+        using var context = DeviceContextFactory.CreateDbContext();
+        
+        return context.Devices.FindAsync([deviceId], cancellationToken).AsTask();
     }
+
+    private async Task<string> CreateDeviceAsync(string userId, Device device, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(device);
+
+        using var context = DeviceContextFactory.CreateDbContext();
+
+        if (string.IsNullOrWhiteSpace(device.Id))
+        {
+            device.Id = Guid.NewGuid().ToString();
+        }
+
+        await context.Devices.AddAsync(device, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        return device.Id;
+    }
+
+    #endregion
 
     public void Dispose()
     {

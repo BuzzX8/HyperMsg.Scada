@@ -1,9 +1,11 @@
 using HyperMsg.Messaging;
 using HyperMsg.Scada.DataAccess;
-using HyperMsg.Scada.WebApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//var connectionString = builder.Configuration.GetConnectionString("LocalMsSql") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -12,10 +14,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMessagingContext();
 
-builder.Services.AddDataAccessRepositories();
 builder.Services.AddDataComponent();
-builder.Services.AddDbContext<DeviceContext>();
-builder.Services.AddDbContext<DeviceTypeContext>();
+builder.Services.AddDataAccessRepositories(options =>
+{
+    options.UseSqlServer(connectionString);
+});
 
 var app = builder.Build();
 

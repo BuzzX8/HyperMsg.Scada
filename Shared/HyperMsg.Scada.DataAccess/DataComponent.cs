@@ -17,7 +17,7 @@ public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactor
     private IEnumerable<IDisposable> RegisterHandlers(IHandlerRegistry handlerRegistry)
     {
         yield return handlerRegistry.RegisterDeviceListRequestHandler(GetDevicesByUserIdAsync);
-        yield return handlerRegistry.RegisterDeviceRequestHandler((userId, deviceId, ctx) => GetDeviceByIdAsync(userId, deviceId, ctx)!);
+        yield return handlerRegistry.RegisterDeviceRequestHandler(GetDeviceByIdAsync!);
         yield return handlerRegistry.RegisterCreateDeviceRequestHandler(CreateDeviceAsync);
     }
 

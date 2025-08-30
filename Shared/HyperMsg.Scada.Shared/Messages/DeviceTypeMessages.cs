@@ -17,3 +17,7 @@ public record struct DeviceTypeResponse(DeviceType DeviceType);
 public record struct UpdateDeviceTypeRequest(string UserId, DeviceType DeviceType);
 
 public record struct UpdateDeviceTypeResponse();
+
+public record struct DeleteDeviceTypeRequest(string UserId, string DeviceTypeId);
+
+public record struct DeleteDeviceTypeResponse();

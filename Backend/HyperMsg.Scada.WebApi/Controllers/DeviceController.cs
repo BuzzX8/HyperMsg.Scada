@@ -34,6 +34,13 @@ public class DeviceController : ControllerBase
         var userId = User?.FindFirst("sub")?.Value ?? string.Empty;
         var response = await _dispatcher.DispatchDeviceListRequestAsync(userId, cancellationToken);
 
+        if (response is null)
+        {
+            _logger.LogWarning("No devices found for user {UserId}", userId);
+
+            return NotFound("No devices found");
+        }
+
         return Ok(response.Select(ToDeviceDto));
     }
 

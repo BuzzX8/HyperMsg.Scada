@@ -21,13 +21,7 @@ public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactor
         yield return handlerRegistry.RegisterCreateDeviceRequestHandler(CreateDeviceAsync);
     }
 
-    public void Detach(IMessagingContext messagingContext)
-    {
-        foreach (var disposable in disposables)
-        {
-            disposable.Dispose();
-        }
-    }
+    public void Detach(IMessagingContext _) => Dispose();
 
     #region Device Handlers
 
@@ -65,7 +59,11 @@ public record DataComponent(IDbContextFactory<DeviceContext> DeviceContextFactor
 
     #endregion
 
-    #region DeviceType Handlers
-
-    #endregion
+    public void Dispose()
+    {
+        foreach (var disposable in disposables)
+        {
+            disposable.Dispose();
+        }
+    }
 }

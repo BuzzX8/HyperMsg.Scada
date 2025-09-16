@@ -2,6 +2,8 @@
 @AdminEmail = "admin@mail.com"
 @AdminPassword = "Admin123!"
 
+# @name register
+
 POST {{HyperMsg.Scada.WebApi_HostAddress}}/register
 Accept: application/json
 Content-Type: application/json
@@ -12,6 +14,8 @@ Content-Type: application/json
 }
 
 ###
+
+# @name login
 
 POST {{HyperMsg.Scada.WebApi_HostAddress}}/login
 Accept: application/json
@@ -24,7 +28,10 @@ Content-Type: application/json
 
 ###
 
+# @name GetDevices
+
 GET {{HyperMsg.Scada.WebApi_HostAddress}}/device
 Accept: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
 
 ###

@@ -10,7 +10,8 @@ namespace HyperMsg.Scada.WebApi.Controllers;
 /// <summary>
 /// API for managing devices.
 /// </summary>
-[ApiController, Authorize]
+[Authorize]
+[ApiController]
 [Route("[controller]")]
 public class DeviceController : ControllerBase
 {

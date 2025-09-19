@@ -16,7 +16,6 @@ app.Run();
 static void AddServices(IServiceCollection services, IConfiguration configuration)
 {
     var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-    //var connectionString = configuration.GetConnectionString("LocalMsSql") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
     services.AddDbContext<UserContext>(options => options.UseSqlite());
     services.AddIdentityApiEndpoints<IdentityUser>()

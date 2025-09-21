@@ -12,3 +12,6 @@
 /Frontend/HyperMsg.Frontend/HyperMsg.Scada.WebApp.csproj.user
 /Shared/HyperMsg.Scada.DataAccess/.vs/HyperMsg.Scada.DataAccess
 /Shared/HyperMsg.Scada.DataAccess/.vs/ProjectEvaluation
+/Backend/HyperMsg.Scada.WebApi/hypermsg_scada.db
+/Backend/HyperMsg.Scada.WebApi/hypermsg_scada.db-shm
+/Backend/HyperMsg.Scada.WebApi/hypermsg_scada.db-wal

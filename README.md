@@ -2,21 +2,14 @@
 
 A modular, cross-platform SCADA front-end powered by **Blazor**, **.NET MAUI**, and **HyperMsg.Core**. Designed for responsive telemetry visualization, control interfaces, and real-time communication across desktop, mobile, and cloud environments.
 
-## 🔧 Architecture Overview
+# Updating the Identity Database for the WebApi Project
 
-HyperMsg.Scada adopts a hybrid client strategy, supporting:
-- **Blazor WebAssembly** for flexible deployment and PWA capabilities
-- **Blazor Server** for high-performance real-time dashboards
-- **.NET MAUI** for native mobile/desktop integration
-- **HyperMsg.Core** as mediator for decoupled messaging
-- **SignalR**, **gRPC-Web**, and **REST APIs** for external communication
+To update the identity database using the `UserContext` class and the .NET CLI, follow these steps:
 
-## 🚀 Features
+1. **Open a terminal in the WebApi project directory.**
 
-- 📡 **Device List & Details Views** with real-time telemetry
-- 🎛️ **Modular Control Panels** for command and feedback loops
-- 🧠 **ONNX-compatible diagnostics** (optional)
-- 🔄 **HyperMsg.Core-driven messaging bus**
-- 📈 **Responsive UI** across resolutions and platforms
-- 🔐 **Authentication and Role-based UI rendering**
-- ⚙️ **Sparkplug B / MQTT integration** for device state awareness
+2. **Update db with Identity migration migration:**
+
+   ```bash
+   dotnet ef database update InitialIdentityMigration -c UserContext --project ./Shared/HyperMsg.Scada.DataAccess/ --startup-project ./Backend/HyperMsg.Scada.WebApi
+   ```

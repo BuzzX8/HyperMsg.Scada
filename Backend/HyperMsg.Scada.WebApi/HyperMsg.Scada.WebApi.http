@@ -1,6 +1,37 @@
-@HyperMsg.Scada.WebApi_HostAddress = http://localhost:5043
+@HyperMsg.Scada.WebApi_HostAddress = http://localhost:8080
+@AdminEmail = "admin@mail.com"
+@AdminPassword = "Admin123!"
 
-GET {{HyperMsg.Scada.WebApi_HostAddress}}/weatherforecast/
+# @name register
+
+POST {{HyperMsg.Scada.WebApi_HostAddress}}/register
 Accept: application/json
+Content-Type: application/json
+
+{
+  "email": {{AdminEmail}},
+  "password": {{AdminPassword}}
+}
+
+###
+
+# @name login
+
+POST {{HyperMsg.Scada.WebApi_HostAddress}}/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": {{AdminEmail}},
+  "password": {{AdminPassword}}
+}
+
+###
+
+# @name GetDevices
+
+GET {{HyperMsg.Scada.WebApi_HostAddress}}/device
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
 
 ###

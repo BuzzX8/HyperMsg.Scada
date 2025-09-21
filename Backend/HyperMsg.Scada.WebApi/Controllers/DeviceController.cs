@@ -2,6 +2,7 @@
 using HyperMsg.Scada.Shared.Messages;
 using HyperMsg.Scada.Shared.Models;
 using HyperMsg.Scada.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HyperMsg.Scada.WebApi.Controllers;
@@ -9,6 +10,7 @@ namespace HyperMsg.Scada.WebApi.Controllers;
 /// <summary>
 /// API for managing devices.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class DeviceController : ControllerBase

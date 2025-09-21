@@ -1,10 +1,10 @@
-@HyperMsg.Scada.WebApi_HostAddress = http://localhost:8080
+@HostAddress = http://localhost:8080
 @AdminEmail = "admin@mail.com"
 @AdminPassword = "Admin123!"
 
 # @name register
 
-POST {{HyperMsg.Scada.WebApi_HostAddress}}/register
+POST {{HostAddress}}/register
 Accept: application/json
 Content-Type: application/json
 
@@ -17,7 +17,7 @@ Content-Type: application/json
 
 # @name login
 
-POST {{HyperMsg.Scada.WebApi_HostAddress}}/login
+POST {{HostAddress}}/login
 Accept: application/json
 Content-Type: application/json
 
@@ -30,8 +30,29 @@ Content-Type: application/json
 
 # @name GetDevices
 
-GET {{HyperMsg.Scada.WebApi_HostAddress}}/device
+GET {{HostAddress}}/device
 Accept: application/json
 Authorization: Bearer {{login.response.body.$.accessToken}}
+
+###
+
+# Device Types
+
+# @name CreateDeviceType
+POST {{HostAddress}}/devicetype
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+{
+  "name": "Fake sensor",
+  "description": "Fake sensor device",
+  "metricTemplates": [
+    {}
+  ],
+  "commandTemplates": [
+    {}
+  ]
+}
 
 ###

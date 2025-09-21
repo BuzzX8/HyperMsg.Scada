@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+﻿using System.Text.Json.Nodes;
 
 namespace HyperMsg.Scada.WebApi.Models
 {
@@ -11,8 +11,8 @@ namespace HyperMsg.Scada.WebApi.Models
 
         public string Description { get; set; } = string.Empty;
 
-        public IEnumerable<JSObject> MetricTemplates { get; set; } = [];
+        public IEnumerable<JsonObject> MetricTemplates { get; set; } = [];
 
-        public IEnumerable<JSObject> CommandTemplates { get; set; } = [];
+        public IEnumerable<JsonObject> CommandTemplates { get; set; } = [];
     }
 }

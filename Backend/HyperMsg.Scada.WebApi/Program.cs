@@ -31,7 +31,12 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
     services.AddDataComponent();
     services.AddDataAccessRepositories(options =>
     {
-        options.UseSqlServer(connectionString);
+        options.UseSqlite(connectionString);
+    });
+
+    services.AddAuthorization(options =>
+    {
+
     });
 }
 

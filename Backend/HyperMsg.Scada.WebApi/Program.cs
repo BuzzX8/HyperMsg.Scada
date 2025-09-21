@@ -17,7 +17,7 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
 {
     var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-    services.AddDbContext<UserContext>(options => options.UseSqlite());
+    services.AddDbContext<UserContext>(options => options.UseSqlite(connectionString));
     services.AddIdentityApiEndpoints<IdentityUser>()
         .AddEntityFrameworkStores<UserContext>();
 

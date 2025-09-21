@@ -11,5 +11,5 @@ To update the identity database using the `UserContext` class and the .NET CLI, 
 2. **Update db with Identity migration migration:**
 
    ```bash
-   dotnet ef database update InitialIdentityMigration -c UserContext
+   dotnet ef database update InitialIdentityMigration -c UserContext --project ./Shared/HyperMsg.Scada.DataAccess/ --startup-project ./Backend/HyperMsg.Scada.WebApi
    ```

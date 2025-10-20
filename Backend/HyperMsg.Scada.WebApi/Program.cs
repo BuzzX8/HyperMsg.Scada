@@ -2,6 +2,7 @@ using HyperMsg.Messaging;
 using HyperMsg.Scada.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ var app = builder.Build();
 
 ConfigureApplication(app);
 
+await SeedTestAdminUser(app);
+
 app.Run();
 
 static void AddServices(IServiceCollection services, IConfiguration configuration)
@@ -18,8 +21,9 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
     var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
     services.AddDbContext<UserContext>(options => options.UseSqlite(connectionString));
-    services.AddIdentityApiEndpoints<IdentityUser>()
+    services.AddIdentity<IdentityUser, IdentityRole>()
         .AddEntityFrameworkStores<UserContext>();
+    services.AddIdentityApiEndpoints<IdentityUser>();
 
     // Add services to the container.
     services.AddControllers();
@@ -32,11 +36,6 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
     services.AddDataAccessRepositories(options =>
     {
         options.UseSqlite(connectionString);
-    });
-
-    services.AddAuthorization(options =>
-    {
-
     });
 }
 
@@ -61,4 +60,45 @@ static void ConfigureApplication(WebApplication app)
     app.UseAuthorization();
 
     app.MapControllers();
+}
+
+static async Task SeedTestAdminUser(WebApplication app)
+{
+    if (app.Environment.IsDevelopment())
+    {
+        using var scope = app.Services.CreateScope();
+
+        var services = scope.ServiceProvider;
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        // 1. Ensure the "Admin" role exists
+        if (!await roleManager.RoleExistsAsync("Admin"))
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+        string adminEmail = "admin@mail.com";
+        string adminPassword = "Admin123!"; // for dev/test only!
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            adminUser = new IdentityUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
+            var createResult = await userManager.CreateAsync(adminUser, adminPassword);
+
+            if (createResult.Succeeded)
+            {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+
+                // 3. Add high-level claims for flexibility
+                await userManager.AddClaimAsync(adminUser, new Claim("Permission", "FullAccess"));
+                await userManager.AddClaimAsync(adminUser, new Claim("CanManageUsers", "true"));
+            }
+        }
+    }
 }

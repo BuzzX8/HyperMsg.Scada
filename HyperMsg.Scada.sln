@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.WebApi.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.DataAccess", "Shared\HyperMsg.Scada.DataAccess\HyperMsg.Scada.DataAccess.csproj", "{AD6485AA-71E7-44B2-BB9E-B8E50491C0DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.WebApi.Http", "HyperMsg.Scada.WebApi.Http\HyperMsg.Scada.WebApi.Http.csproj", "{E6D81C1D-D994-40C7-983C-9262B0D87FAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.WebApi.Http", "Backend\HyperMsg.Scada.WebApi.Http\HyperMsg.Scada.WebApi.Http.csproj", "{E6D81C1D-D994-40C7-983C-9262B0D87FAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

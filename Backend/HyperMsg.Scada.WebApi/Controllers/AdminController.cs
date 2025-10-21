@@ -26,7 +26,7 @@ public class AdminController : ControllerBase
         return Ok(users);
     }
 
-    [HttpPost("user")]
+    [HttpPost("users")]
     public async Task<IActionResult> CreateUser(string userName, string password)
     {
         var user = new IdentityUser { UserName = userName, Email = userName };

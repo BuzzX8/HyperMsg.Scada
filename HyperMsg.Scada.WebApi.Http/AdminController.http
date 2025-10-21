@@ -1,0 +1,23 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+# @name GetUsers
+
+GET {{HostAddress}}/admin/users
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+###
+
+# @name CreateUser
+
+POST {{HostAddress}}/admin/users
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "email": {{AdminEmail}},
+  "password": {{AdminPassword}}
+}
+
+###

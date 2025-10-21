@@ -8,10 +8,10 @@ USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG configuration=Release
 WORKDIR /src
-COPY ["Backend/HyperMsg.Scada.WebApi/HyperMsg.Scada.WebApi.csproj", "Backend/HyperMsg.Scada.WebApi/"]
-RUN dotnet restore "Backend/HyperMsg.Scada.WebApi/HyperMsg.Scada.WebApi.csproj"
+COPY ["HyperMsg.Scada.WebApi.csproj", "HyperMsg.Scada.WebApi/"]
+RUN dotnet restore "HyperMsg.Scada.WebApi/HyperMsg.Scada.WebApi.csproj"
 COPY . .
-WORKDIR "/src/Backend/HyperMsg.Scada.WebApi"
+WORKDIR "/src/HyperMsg.Scada.WebApi"
 RUN dotnet build "HyperMsg.Scada.WebApi.csproj" -c $configuration -o /app/build
 
 FROM build AS publish

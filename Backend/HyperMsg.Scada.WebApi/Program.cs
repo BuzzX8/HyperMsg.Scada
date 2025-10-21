@@ -21,9 +21,8 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
     var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
     services.AddDbContext<UserContext>(options => options.UseSqlite(connectionString));
-    services.AddIdentity<IdentityUser, IdentityRole>()
+    services.AddIdentityApiEndpoints<IdentityUser>()
         .AddEntityFrameworkStores<UserContext>();
-    services.AddIdentityApiEndpoints<IdentityUser>();
 
     // Add services to the container.
     services.AddControllers();
@@ -70,11 +69,6 @@ static async Task SeedTestAdminUser(WebApplication app)
 
         var services = scope.ServiceProvider;
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-        // 1. Ensure the "Admin" role exists
-        if (!await roleManager.RoleExistsAsync("Admin"))
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
 
         string adminEmail = "admin@mail.com";
         string adminPassword = "Admin123!"; // for dev/test only!
@@ -93,11 +87,8 @@ static async Task SeedTestAdminUser(WebApplication app)
 
             if (createResult.Succeeded)
             {
-                await userManager.AddToRoleAsync(adminUser, "Admin");
-
                 // 3. Add high-level claims for flexibility
                 await userManager.AddClaimAsync(adminUser, new Claim("Permission", "FullAccess"));
-                await userManager.AddClaimAsync(adminUser, new Claim("CanManageUsers", "true"));
             }
         }
     }

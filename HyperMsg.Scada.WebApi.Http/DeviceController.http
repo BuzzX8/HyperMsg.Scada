@@ -1,0 +1,9 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+# @name GetDevices
+
+GET {{HostAddress}}/device
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+###

@@ -9,8 +9,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "email": {{AdminEmail}},
-  "password": {{AdminPassword}}
+  "email": "{{AdminEmail}}",
+  "password": "{{AdminPassword}}"
 }
 
 ###
@@ -22,8 +22,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "email": {{AdminEmail}},
-  "password": {{AdminPassword}}
+  "email": "{{AdminEmail}}",
+  "password": "{{AdminPassword}}"
 }
 
 ###

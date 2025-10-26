@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using HyperMsg.Scada.WebApp.Components.Pages
+@using Microsoft.AspNetCore.Components.Authorization
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,7 +16,15 @@
 </head>
 
 <body>
-    <Routes />
+    <AuthorizeView>
+        <Authorized>
+            <Routes />
+        </Authorized>
+        <NotAuthorized>
+            <Login />
+        </NotAuthorized>
+    </AuthorizeView>
+    
     <script src="_framework/blazor.web.js"></script>
 </body>
 

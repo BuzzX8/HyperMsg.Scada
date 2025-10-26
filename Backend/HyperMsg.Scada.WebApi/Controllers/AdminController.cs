@@ -1,23 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static HyperMsg.Scada.Shared.Security.Permissions;
 
 namespace HyperMsg.Scada.WebApi.Controllers;
 
-[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class AdminController : ControllerBase
 {
     private readonly UserManager<IdentityUser> _userManager;
 
-    public AdminController(UserManager<IdentityUser> userManager)
-    {
-        _userManager = userManager;
-    }
+    public AdminController(UserManager<IdentityUser> userManager) => _userManager = userManager;
 
     #region Users
 
+    [Authorize(Policy = Users.View)]
     [HttpGet("users")]
     public IActionResult GetUsers()
     {
@@ -26,6 +24,7 @@ public class AdminController : ControllerBase
         return Ok(users);
     }
 
+    [Authorize(Policy = Users.Create)]
     [HttpPost("users")]
     public async Task<IActionResult> CreateUser(string userName, string password)
     {
@@ -41,6 +40,7 @@ public class AdminController : ControllerBase
         }
     }
 
+    [Authorize(Policy = Users.Edit)]
     [HttpPut("user/{id}")]
     public async Task<IActionResult> UpdateUser(string id)
     {
@@ -66,6 +66,7 @@ public class AdminController : ControllerBase
 
     #region Permissions
 
+    [Authorize(Policy = Users.AssignPermissions)]
     [HttpPost("user/{id}/permissions")]
     public async Task<IActionResult> AddPermissionsToUser(string id, [FromBody] List<string> permissions)
     {

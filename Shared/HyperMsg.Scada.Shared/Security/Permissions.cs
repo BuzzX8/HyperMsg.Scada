@@ -1,7 +1,11 @@
-﻿namespace HyperMsg.Scada.Shared.Security;
+﻿using System.Security.Claims;
+
+namespace HyperMsg.Scada.Shared.Security;
 
 public static class Permissions
 {
+    public static readonly string ClaimType = typeof(Permissions).FullName ?? "Permissions";
+
     public static class Devices
     {
         public const string View = "Devices.View";
@@ -31,4 +35,18 @@ public static class Permissions
         public const string Delete = "Users.Delete";
         public const string AssignPermissions = "Users.AssignPermissions";
     }
+
+    public static IEnumerable<string> AllUsers
+    {
+        get
+        {
+            yield return Users.Create;
+            yield return Users.View;
+            yield return Users.Edit;
+            yield return Users.Delete;
+            yield return Users.AssignPermissions;
+        }
+    }
+
+    public static Claim Claim(string permission) => new(ClaimType, permission);
 }

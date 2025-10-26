@@ -1,5 +1,6 @@
 using HyperMsg.Messaging;
 using HyperMsg.Scada.DataAccess;
+using HyperMsg.Scada.Shared.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -35,6 +36,14 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
     services.AddDataAccessRepositories(options =>
     {
         options.UseSqlite(connectionString);
+    });
+
+    services.AddAuthorization(options =>
+    {
+        foreach (var permission in Permissions.AllUsers)
+        {
+            options.AddPolicy(permission, policy => policy.RequireClaim(Permissions.ClaimType, permission));
+        }
     });
 }
 
@@ -88,7 +97,8 @@ static async Task SeedTestAdminUser(WebApplication app)
             if (createResult.Succeeded)
             {
                 // 3. Add high-level claims for flexibility
-                await userManager.AddClaimAsync(adminUser, new Claim("Permission", "FullAccess"));
+                await userManager.AddClaimAsync(adminUser, Permissions.Claim(Permissions.Users.View));
+                await userManager.AddClaimAsync(adminUser, Permissions.Claim(Permissions.Users.Create));
             }
         }
     }

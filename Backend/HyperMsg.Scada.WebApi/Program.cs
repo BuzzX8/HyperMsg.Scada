@@ -1,7 +1,9 @@
 using HyperMsg.Messaging;
 using HyperMsg.Scada.DataAccess;
+using HyperMsg.Scada.Shared.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ AddServices(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 ConfigureApplication(app);
+
+await SeedTestAdminUser(app);
 
 app.Run();
 
@@ -31,7 +35,15 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
     services.AddDataComponent();
     services.AddDataAccessRepositories(options =>
     {
-        options.UseSqlServer(connectionString);
+        options.UseSqlite(connectionString);
+    });
+
+    services.AddAuthorization(options =>
+    {
+        foreach (var permission in Permissions.AllUsers)
+        {
+            options.AddPolicy(permission, policy => policy.RequireClaim(Permissions.ClaimType, permission));
+        }
     });
 }
 
@@ -56,4 +68,38 @@ static void ConfigureApplication(WebApplication app)
     app.UseAuthorization();
 
     app.MapControllers();
+}
+
+static async Task SeedTestAdminUser(WebApplication app)
+{
+    if (app.Environment.IsDevelopment())
+    {
+        using var scope = app.Services.CreateScope();
+
+        var services = scope.ServiceProvider;
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+        string adminEmail = "admin@mail.com";
+        string adminPassword = "Admin123!"; // for dev/test only!
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            adminUser = new IdentityUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
+            var createResult = await userManager.CreateAsync(adminUser, adminPassword);
+
+            if (createResult.Succeeded)
+            {
+                // 3. Add high-level claims for flexibility
+                await userManager.AddClaimAsync(adminUser, Permissions.Claim(Permissions.Users.View));
+                await userManager.AddClaimAsync(adminUser, Permissions.Claim(Permissions.Users.Create));
+            }
+        }
+    }
 }

@@ -2,6 +2,7 @@
 using HyperMsg.Scada.Shared.Messages;
 using HyperMsg.Scada.Shared.Models;
 using HyperMsg.Scada.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HyperMsg.Scada.WebApi.Controllers;
@@ -24,6 +25,7 @@ public class DeviceTypeController : ControllerBase
     /// </summary>
     /// <returns>List of device types.</returns>
     [HttpGet]
+    [Authorize(Policy = "p1")]
     [EndpointDescription("Get all device types")]
     [ProducesResponseType(typeof(IEnumerable<DeviceTypeDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

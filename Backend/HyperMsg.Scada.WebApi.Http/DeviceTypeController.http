@@ -1,0 +1,20 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+# @name CreateDeviceType
+POST {{HostAddress}}/devicetype
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+{
+  "name": "Fake sensor",
+  "description": "Fake sensor device",
+  "metricTemplates": [
+    {}
+  ],
+  "commandTemplates": [
+    {}
+  ]
+}
+
+###

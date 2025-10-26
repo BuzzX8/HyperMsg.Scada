@@ -1,0 +1,29 @@
+# @HostAddress = http://localhost:8080
+# @AdminEmail = "admin@mail.com"
+# @AdminPassword = "Admin123!"
+
+# @name register
+
+POST {{HostAddress}}/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "{{AdminEmail}}",
+  "password": "{{AdminPassword}}"
+}
+
+###
+
+# @name login
+
+POST {{HostAddress}}/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "{{AdminEmail}}",
+  "password": "{{AdminPassword}}"
+}
+
+###

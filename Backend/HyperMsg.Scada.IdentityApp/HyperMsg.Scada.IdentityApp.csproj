@@ -15,4 +15,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\HyperMsg.Scada.DataAccess\HyperMsg.Scada.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

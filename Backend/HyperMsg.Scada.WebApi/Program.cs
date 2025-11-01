@@ -3,7 +3,6 @@ using HyperMsg.Scada.DataAccess;
 using HyperMsg.Scada.Shared.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +20,9 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
 {
     var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-    services.AddDbContext<UserContext>(options => options.UseSqlite(connectionString));
-    services.AddIdentityApiEndpoints<IdentityUser>()
-        .AddEntityFrameworkStores<UserContext>();
+    //services.AddDbContext<UserContext>(options => options.UseSqlite(connectionString));
+    //services.AddIdentityApiEndpoints<IdentityUser>()
+    //    .AddEntityFrameworkStores<UserContext>();
 
     // Add services to the container.
     services.AddControllers();

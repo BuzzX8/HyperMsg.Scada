@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.DataAccess",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.WebApi.Http", "Backend\HyperMsg.Scada.WebApi.Http\HyperMsg.Scada.WebApi.Http.csproj", "{E6D81C1D-D994-40C7-983C-9262B0D87FAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperMsg.Scada.IdentityApp", "Backend\HyperMsg.Scada.IdentityApp\HyperMsg.Scada.IdentityApp.csproj", "{789C8B99-5C12-493A-97DB-0423FB21EEE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{E6D81C1D-D994-40C7-983C-9262B0D87FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6D81C1D-D994-40C7-983C-9262B0D87FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6D81C1D-D994-40C7-983C-9262B0D87FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{789C8B99-5C12-493A-97DB-0423FB21EEE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{789C8B99-5C12-493A-97DB-0423FB21EEE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{789C8B99-5C12-493A-97DB-0423FB21EEE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{789C8B99-5C12-493A-97DB-0423FB21EEE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{6C6D9176-D1D0-C7CB-5E53-6C9B3100AFB5} = {F67D56B6-E229-4387-8495-E9FDF3814D15}
 		{AD6485AA-71E7-44B2-BB9E-B8E50491C0DF} = {BF1F8FF8-05D7-4F83-B745-EA88E9F8544E}
 		{E6D81C1D-D994-40C7-983C-9262B0D87FAE} = {F67D56B6-E229-4387-8495-E9FDF3814D15}
+		{789C8B99-5C12-493A-97DB-0423FB21EEE8} = {F67D56B6-E229-4387-8495-E9FDF3814D15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {06C5B1BB-D046-48DA-BD81-4CE8DDDA08CF}

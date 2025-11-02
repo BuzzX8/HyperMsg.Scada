@@ -29,15 +29,6 @@ public class DeviceContext(DbContextOptions<DeviceContext> options) : DbContext(
         return device.Id;
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseInMemoryDatabase("DeviceDatabase");
-            
-        }
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new DeviceConfiguration());

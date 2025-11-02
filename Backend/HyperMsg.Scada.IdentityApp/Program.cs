@@ -1,6 +1,5 @@
-using HyperMsg.Scada.DataAccess;
+using HyperMsg.Scada.IdentityApp.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -13,8 +12,7 @@ builder.Services.AddSwaggerGen();
 var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 var services = builder.Services;
 
-//services.AddDbContext<UserContext>(options =>
-//    options.UseSqlServer(connectionString));
+services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
 
 var app = builder.Build();
 

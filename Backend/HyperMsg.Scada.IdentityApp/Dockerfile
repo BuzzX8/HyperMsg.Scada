@@ -12,8 +12,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["NuGet.config", "."]
-COPY ["Backend/HyperMsg.Scada.IdentityApp/HyperMsg.Scada.IdentityApp.csproj", "Backend/HyperMsg.Scada.IdentityApp/"]
+COPY ["./HyperMsg.Scada.IdentityApp.csproj", "Backend/HyperMsg.Scada.IdentityApp/"]
 RUN dotnet restore "./Backend/HyperMsg.Scada.IdentityApp/HyperMsg.Scada.IdentityApp.csproj"
 COPY . .
 WORKDIR "/src/Backend/HyperMsg.Scada.IdentityApp"

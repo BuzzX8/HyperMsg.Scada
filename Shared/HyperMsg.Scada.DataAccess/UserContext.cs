@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace HyperMsg.Scada.DataAccess;
 
-public class UserContext : IdentityDbContext<IdentityUser>
+public class UserContext<TUser>() : IdentityDbContext<TUser> where TUser : IdentityUser
 {
-    public UserContext(DbContextOptions<UserContext> options)
-        : base(options)
-    {
-    }
+    
 }

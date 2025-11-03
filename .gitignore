@@ -10,3 +10,6 @@
 /Backend/HyperMsg.Scada.WebApi/hypermsg_scada.db
 /Backend/HyperMsg.Scada.WebApi/hypermsg_scada.db-shm
 /Backend/HyperMsg.Scada.WebApi/hypermsg_scada.db-wal
+/Backend/HyperMsg.Scada.IdentityApp/hypermsg_scada.db
+/Backend/HyperMsg.Scada.IdentityApp/hypermsg_scada.db-shm
+/Backend/HyperMsg.Scada.IdentityApp/hypermsg_scada.db-wal

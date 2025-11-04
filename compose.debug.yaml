@@ -20,6 +20,7 @@ services:
       args:
         - configuration=Debug
     ports:
-      - 8086:8086
+      - 8085:8085
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - HTTP_PORTS=8085

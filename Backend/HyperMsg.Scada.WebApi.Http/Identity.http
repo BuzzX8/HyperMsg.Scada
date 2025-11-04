@@ -1,7 +1,3 @@
-# @HostAddress = http://localhost:8080
-# @AdminEmail = "admin@mail.com"
-# @AdminPassword = "Admin123!"
-
 # @name register
 
 POST {{HostAddress}}/register

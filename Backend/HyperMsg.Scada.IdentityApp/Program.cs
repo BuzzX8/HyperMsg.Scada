@@ -1,5 +1,4 @@
 using HyperMsg.Scada.IdentityApp.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +10,43 @@ builder.Services.AddSwaggerGen();
 var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 var services = builder.Services;
 
-services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
-services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+services.AddControllers();
+services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlite(connectionString);
+    options.UseOpenIddict();
+});
+
+services.AddOpenIddict()
+    // Register the OpenIddict core components.
+    .AddCore(options =>
+    {
+        // Configure OpenIddict to use the Entity Framework Core stores and models.
+        // Note: call ReplaceDefaultEntities() to replace the default entities.
+        options.UseEntityFrameworkCore()
+               .UseDbContext<ApplicationDbContext>();
+    });
+
+services.AddOpenIddict()
+    // Register the OpenIddict server components.
+    .AddServer(options =>
+    {
+        // Enable the token endpoint.
+        options.SetTokenEndpointUris("connect/token");
+
+        // Enable the client credentials flow.
+        options.AllowClientCredentialsFlow();
+
+        // Register the signing and encryption credentials.
+        options.AddDevelopmentEncryptionCertificate()
+               .AddDevelopmentSigningCertificate();
+
+        // Register the ASP.NET Core host and configure the ASP.NET Core options.
+        options.UseAspNetCore()
+               .EnableTokenEndpointPassthrough();
+    });
+
+services.AddHostedService<Worker>();
 
 var app = builder.Build();
 
@@ -22,14 +55,19 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapIdentityApi<IdentityUser>();
 }
 
+app.UseRouting();
+
 app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapDefaultControllerRoute();
+
 app.UseHttpsRedirection();
 
 await ApplyMigrationsIfNeeded(app);
-await SeedTestAdminUser(app);
 
 app.Run();
 
@@ -59,39 +97,5 @@ static async Task ApplyMigrationsIfNeeded(WebApplication app)
     {
         logger.LogError(ex, "An error occurred while applying EF Core migrations.");
         throw;
-    }
-}
-
-static async Task SeedTestAdminUser(WebApplication app)
-{
-    if (!app.Environment.IsDevelopment())
-    {
-        return;
-    }
-
-    using var scope = app.Services.CreateScope();
-
-    var services = scope.ServiceProvider;
-    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-
-    string adminEmail = "admin@mail.com";
-    string adminPassword = "Admin123!"; // for dev/test only!
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-    if (adminUser == null)
-    {
-        adminUser = new()
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-
-        var createResult = await userManager.CreateAsync(adminUser, adminPassword);
-
-        if (!createResult.Succeeded)
-        {
-            throw new Exception("Failed to create admin user: " + string.Join(", ", createResult.Errors.Select(e => e.Description)));
-        }
     }
 }

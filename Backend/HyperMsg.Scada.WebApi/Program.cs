@@ -3,6 +3,9 @@ using HyperMsg.Scada.DataAccess;
 using HyperMsg.Scada.Shared.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,6 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
 
     // Add services to the container.
     services.AddControllers();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
     services.AddMessagingContext();
@@ -31,6 +33,54 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
         options.UseSqlite(connectionString);
     });
 
+    // Authentication - validate JWTs issued by the Identity app
+    var identityAuthority = configuration["Identity:Authority"];
+    var identityAudience = configuration["Identity:Audience"];
+
+    services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        // If you configure Authority (Identity app URL) the middleware will fetch signing keys via discovery.
+        if (!string.IsNullOrEmpty(identityAuthority))
+        {
+            options.Authority = identityAuthority;      // e.g. "https://localhost:5001"
+            options.Audience = identityAudience;        // e.g. "hypermsg-api"
+            options.RequireHttpsMetadata = !string.Equals(configuration["Identity:AllowInsecureHttp"], "true", StringComparison.OrdinalIgnoreCase);
+        }
+        else
+        {
+            // Fallback: symmetric key from configuration (use only for dev/test)
+            var key = configuration["Jwt:Key"] ?? throw new InvalidOperationException("No Identity:Authority or Jwt:Key configured.");
+            options.RequireHttpsMetadata = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = configuration["Jwt:Audience"],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                ValidateLifetime = true
+            };
+        }
+
+        // Optional: helpful for debugging token issues in development
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = ctx =>
+            {
+                var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("JwtAuth");
+                logger.LogError(ctx.Exception, "Authentication failed");
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+    // Authorization policies (existing)
     services.AddAuthorization(options =>
     {
         foreach (var permission in Permissions.AllUsers)
@@ -42,12 +92,11 @@ static void AddServices(IServiceCollection services, IConfiguration configuratio
 
 static void ConfigureApplication(WebApplication app)
 {
-    // Configure the HTTP request pipeline.5
+    // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.MapIdentityApi<IdentityUser>();
     }
     else
     {
@@ -56,8 +105,8 @@ static void ConfigureApplication(WebApplication app)
         app.UseHsts();
     }
 
-    //app.UseHttpsRedirection();
-
+    // IMPORTANT: Authentication before Authorization
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

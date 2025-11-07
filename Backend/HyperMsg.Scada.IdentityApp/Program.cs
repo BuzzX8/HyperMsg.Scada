@@ -1,97 +1,79 @@
 using HyperMsg.Scada.IdentityApp.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-var services = builder.Services;
-
-services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
-services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+AddApplicationServices(configuration, builder.Services, builder.Environment);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapIdentityApi<IdentityUser>();
 }
 
+app.UseRouting();
 app.UseAuthentication();
-app.UseHttpsRedirection();
+app.UseAuthorization();
 
-await ApplyMigrationsIfNeeded(app);
-await SeedTestAdminUser(app);
+app.MapControllers();
+app.MapDefaultControllerRoute();
+
+app.UseHttpsRedirection();
 
 app.Run();
 
-static async Task ApplyMigrationsIfNeeded(WebApplication app)
+static void AddApplicationServices(IConfiguration configuration, IServiceCollection services, IWebHostEnvironment env)
 {
-    using var scope = app.Services.CreateScope();
-    var services = scope.ServiceProvider;
-    var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("DbMigration");
+    services.AddControllers();
 
-    try
+    // Swagger registration
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen(options =>
     {
-        var db = services.GetRequiredService<ApplicationDbContext>();
-        var pending = await db.Database.GetPendingMigrationsAsync();
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "HyperMsg.Scada.IdentityApp",
+            Version = "v1"
+        });
+    });
 
-        if (pending.Any())
-        {
-            logger.LogInformation("Applying {Count} pending EF Core migrations...", pending.Count());
-            await db.Database.MigrateAsync();
-            logger.LogInformation("Migrations applied.");
-        }
-        else
-        {
-            logger.LogInformation("No pending EF Core migrations.");
-        }
-    }
-    catch (Exception ex)
+    services.AddDbContext<ApplicationDbContext>(options =>
     {
-        logger.LogError(ex, "An error occurred while applying EF Core migrations.");
-        throw;
-    }
-}
+        var dbFileName = "hypermsg_identity.db";
+        var dbPath = Path.Combine(AppContext.BaseDirectory, dbFileName);
+        options.UseSqlite($"Data Source={dbPath}");
+        options.UseOpenIddict();
+    });
 
-static async Task SeedTestAdminUser(WebApplication app)
-{
-    if (!app.Environment.IsDevelopment())
-    {
-        return;
-    }
-
-    using var scope = app.Services.CreateScope();
-
-    var services = scope.ServiceProvider;
-    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-
-    string adminEmail = "admin@mail.com";
-    string adminPassword = "Admin123!"; // for dev/test only!
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-    if (adminUser == null)
-    {
-        adminUser = new()
+    services.AddOpenIddict()
+        .AddCore(options =>
         {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
+            options.UseEntityFrameworkCore()
+                   .UseDbContext<ApplicationDbContext>();
+        });
 
-        var createResult = await userManager.CreateAsync(adminUser, adminPassword);
-
-        if (!createResult.Succeeded)
+    services.AddOpenIddict()
+        .AddServer(options =>
         {
-            throw new Exception("Failed to create admin user: " + string.Join(", ", createResult.Errors.Select(e => e.Description)));
-        }
-    }
+            options.SetTokenEndpointUris("connect/token");
+            options.AllowClientCredentialsFlow();
+            options.AddDevelopmentEncryptionCertificate()
+                   .AddDevelopmentSigningCertificate();
+
+            // Allow non-HTTPS only in Development for local testing.
+            options.UseAspNetCore()
+                   .EnableTokenEndpointPassthrough();
+
+            if (env.IsDevelopment())
+            {
+                options.UseAspNetCore()
+                       .DisableTransportSecurityRequirement();
+            }
+        });
+
+    services.AddHostedService<BootstrapWorker>();
 }

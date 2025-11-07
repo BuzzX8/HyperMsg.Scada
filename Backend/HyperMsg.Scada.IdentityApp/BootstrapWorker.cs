@@ -2,7 +2,7 @@
 using OpenIddict.Abstractions;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-public class Worker(IServiceProvider serviceProvider) : IHostedService
+public class BootstrapWorker(IServiceProvider serviceProvider) : IHostedService
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider;
 
@@ -15,19 +15,19 @@ public class Worker(IServiceProvider serviceProvider) : IHostedService
 
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
-        if (await manager.FindByClientIdAsync("service-worker") is null)
+        if (await manager.FindByClientIdAsync("admin@mail.com", cancellationToken) is not null)
+            return;        
+
+        await manager.CreateAsync(new()
         {
-            await manager.CreateAsync(new OpenIddictApplicationDescriptor
-            {
-                ClientId = "service-worker",
-                ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C207",
-                Permissions =
+            ClientId = "admin@mail.com",
+            ClientSecret = "Admin123!",
+            Permissions =
                 {
                     Permissions.Endpoints.Token,
                     Permissions.GrantTypes.ClientCredentials
                 }
-            });
-        }
+        }, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

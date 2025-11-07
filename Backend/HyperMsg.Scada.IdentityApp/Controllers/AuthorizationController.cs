@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
@@ -9,9 +8,9 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace HyperMsg.Scada.IdentityApp.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
-public class AuthorizationController : Controller
+public class AuthorizationController : ControllerBase
 {
     private readonly IOpenIddictApplicationManager _applicationManager;
 
@@ -22,6 +21,7 @@ public class AuthorizationController : Controller
     public async Task<IActionResult> Exchange()
     {
         var request = HttpContext.GetOpenIddictServerRequest();
+
         if (request.IsClientCredentialsGrantType())
         {
             // Note: the client credentials are automatically validated by OpenIddict:

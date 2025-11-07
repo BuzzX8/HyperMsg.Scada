@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-AddApplicationServices(configuration, builder.Services);
+AddApplicationServices(configuration, builder.Services, builder.Environment);
 
 var app = builder.Build();
 
@@ -27,19 +27,19 @@ app.UseHttpsRedirection();
 
 app.Run();
 
-static void AddApplicationServices(IConfiguration configuration, IServiceCollection services)
+static void AddApplicationServices(IConfiguration configuration, IServiceCollection services, IWebHostEnvironment env)
 {
     var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
     services.AddControllers();
 
-    // Register Swagger services so ISwaggerProvider is available for the middleware.
+    // Swagger registration
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = "IdentityApp For HyperMsg SCADA",
+            Title = "HyperMsg.Scada.IdentityApp",
             Version = "v1"
         });
     });
@@ -51,32 +51,29 @@ static void AddApplicationServices(IConfiguration configuration, IServiceCollect
     });
 
     services.AddOpenIddict()
-        // Register the OpenIddict core components.
         .AddCore(options =>
         {
-            // Configure OpenIddict to use the Entity Framework Core stores and models.
-            // Note: call ReplaceDefaultEntities() to replace the default entities.
             options.UseEntityFrameworkCore()
                    .UseDbContext<ApplicationDbContext>();
         });
 
     services.AddOpenIddict()
-        // Register the OpenIddict server components.
         .AddServer(options =>
         {
-            // Enable the token endpoint.
             options.SetTokenEndpointUris("connect/token");
-
-            // Enable the client credentials flow.
             options.AllowClientCredentialsFlow();
-
-            // Register the signing and encryption credentials.
             options.AddDevelopmentEncryptionCertificate()
                    .AddDevelopmentSigningCertificate();
 
-            // Register the ASP.NET Core host and configure the ASP.NET Core options.
+            // Allow non-HTTPS only in Development for local testing.
             options.UseAspNetCore()
                    .EnableTokenEndpointPassthrough();
+
+            if (env.IsDevelopment())
+            {
+                options.UseAspNetCore()
+                       .DisableTransportSecurityRequirement();
+            }
         });
 
     services.AddHostedService<BootstrapWorker>();

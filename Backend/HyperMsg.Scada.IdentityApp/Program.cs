@@ -16,7 +16,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -29,8 +28,6 @@ app.Run();
 
 static void AddApplicationServices(IConfiguration configuration, IServiceCollection services, IWebHostEnvironment env)
 {
-    var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
     services.AddControllers();
 
     // Swagger registration
@@ -46,7 +43,9 @@ static void AddApplicationServices(IConfiguration configuration, IServiceCollect
 
     services.AddDbContext<ApplicationDbContext>(options =>
     {
-        options.UseSqlite(connectionString);
+        var dbFileName = "hypermsg_identity.db";
+        var dbPath = Path.Combine(AppContext.BaseDirectory, dbFileName);
+        options.UseSqlite($"Data Source={dbPath}");
         options.UseOpenIddict();
     });
 

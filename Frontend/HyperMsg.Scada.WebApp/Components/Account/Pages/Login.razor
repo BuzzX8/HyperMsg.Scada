@@ -1,15 +1,17 @@
 ﻿@page "/Account/Login"
 
 @using System.ComponentModel.DataAnnotations
+@using HyperMsg.Messaging
 @using HyperMsg.Scada.WebApp.Components.Account
 @using HyperMsg.Scada.WebApp.Components.Account.Shared
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<ApplicationUser> SignInManager
+@* @inject SignInManager<ApplicationUser> SignInManager *@
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
-@inject IdentityRedirectManager RedirectManager
+@* @inject IdentityRedirectManager RedirectManager *@
+@inject IDispatcher Dispatcher
 
 <PageTitle>Log in</PageTitle>
 
@@ -56,13 +58,13 @@
             </EditForm>
         </section>
     </div>
-    <div class="col-lg-4 col-lg-offset-2">
+    @* <div class="col-lg-4 col-lg-offset-2">
         <section>
             <h3>Use another service to log in.</h3>
             <hr />
             <ExternalLoginPicker />
         </section>
-    </div>
+    </div> *@
 </div>
 
 @code {
@@ -90,27 +92,27 @@
     {
         // This doesn't count login failures towards account lockout
         // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-        if (result.Succeeded)
-        {
-            Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
-        }
-        else if (result.RequiresTwoFactor)
-        {
-            RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
-        }
-        else if (result.IsLockedOut)
-        {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
-        }
-        else
-        {
-            errorMessage = "Error: Invalid login attempt.";
-        }
+        //var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        // if (result.Succeeded)
+        // {
+        //     Logger.LogInformation("User logged in.");
+        //     RedirectManager.RedirectTo(ReturnUrl);
+        // }
+        // else if (result.RequiresTwoFactor)
+        // {
+        //     RedirectManager.RedirectTo(
+        //         "Account/LoginWith2fa",
+        //         new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+        // }
+        // else if (result.IsLockedOut)
+        // {
+        //     Logger.LogWarning("User account locked out.");
+        //     RedirectManager.RedirectTo("Account/Lockout");
+        // }
+        // else
+        // {
+        //     errorMessage = "Error: Invalid login attempt.";
+        // }
     }
 
     private sealed class InputModel
